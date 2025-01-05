@@ -7,7 +7,7 @@ OBJS_PATH		=	./objs/
 HEAD_PATH		=	./includes/
 
 FILES			=	main.cpp \
-					Socket.cpp
+					Socket.cpp 
 					
 HEAD_FILES		=	Socket.hpp
 
@@ -45,5 +45,8 @@ re:				fclean all
 test: all
 	./$(NAME) 3 5 9 7 4
 -include : ${DEPS}
+
+uml: 
+	dot -Tpng http_server_uml.dot -o http_server_uml.png
 
 .PHONY:			all clean fclean re
