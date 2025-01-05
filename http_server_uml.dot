@@ -4,7 +4,7 @@ digraph "Webserv UML Updated" {
 
     Socket [
                 label="{\
-                Socket| - _sock: int \l- _connection: int \l- _address: struct sockaddr_in \l- _max_try: int\l| \
+                Socket| - _server_fd: int \l- _connection: int \l- _address: struct sockaddr_in \l- _max_try: int\l| \
                 //Orthodox Canonical \
                 \l+ Socket(int domain, int service, int protocol, int port, unsigned long interface): void \
                 \l+ ~Socket(): void \
