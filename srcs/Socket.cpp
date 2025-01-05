@@ -9,20 +9,23 @@ WebServer::Socket::Socket(int domain, int service,  int protocol, int port, unsi
     this->_address.sin_addr.s_addr = interface;
     memset(this->_address.sin_zero, '\0', sizeof(this->_address.sin_zero));
     // Establish Socket
-    this->_sock = socket(domain, service, protocol);
+    this->_server_fd = socket(domain, service, protocol);
     // Set Max Try for Socket 
     this->_max_try = 10;
 }
 
 // Default Destructor
-WebServer::Socket::~Socket() {}
+WebServer::Socket::~Socket()
+{
+    close(this->getServerFd());
+}
 
 WebServer::Socket::Socket(const Socket& temp) { *this = temp; }
 
 WebServer::Socket& WebServer::Socket::operator=(const Socket &temp)
 {
     if (this != &temp) {
-        this->_sock = temp.getSock();
+        this->_server_fd = temp.getServerFd();
         this->_connection = temp.getConnection();
         this->_max_try = temp.getMaxTry();
         this->_address = temp.getAddress();
@@ -35,7 +38,7 @@ void WebServer::Socket::bindConnection()
 {
     struct sockaddr_in address = this->getAddress();
     int addr_len = sizeof(address);
-    this->setConnection(bind(this->getSock(), (struct sockaddr *)&address, addr_len));
+    this->setConnection(bind(this->getServerFd(), (struct sockaddr *)&address, addr_len));
     this->testConnection(this->getConnection());
 }
 
@@ -43,14 +46,14 @@ int WebServer::Socket::acceptConnection()
 {
     struct sockaddr_in address = this->getAddress();
     int addr_len = sizeof(address);
-    int new_socket = accept(this->getSock(), (struct sockaddr *)&address, (socklen_t*)&addr_len);
+    int new_socket = accept(this->getServerFd(), (struct sockaddr *)&address, (socklen_t*)&addr_len);
     this->testConnection(new_socket);
     return new_socket;
 }
     
 void WebServer::Socket::listenConnection()
 {
-    this->testConnection(listen(this->getSock(), this->getMaxTry()));
+    this->testConnection(listen(this->getServerFd(), this->getMaxTry()));
 }
 
 
@@ -65,7 +68,7 @@ void WebServer::Socket::testConnection(int test_variable)
 // Getters
 struct sockaddr_in WebServer::Socket::getAddress() const { return this->_address; }
 
-int WebServer::Socket::getSock() const { return this->_sock; }
+int WebServer::Socket::getServerFd() const { return this->_server_fd; }
 
 int WebServer::Socket::getConnection() const { return this->_connection; }
 

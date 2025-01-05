@@ -10,6 +10,8 @@
 # include <fcntl.h>
 # include <iostream>
 # include <unistd.h>
+# include <csignal>
+
 
 using std::cout;
 using std::endl;
@@ -20,7 +22,7 @@ namespace WebServer
     class Socket
     {
         private:
-            int _sock;
+            int _server_fd;
             int _connection;
             int _max_try;
             struct sockaddr_in _address;
@@ -32,7 +34,7 @@ namespace WebServer
 
             // Getters
             struct sockaddr_in getAddress() const;
-            int getSock() const;
+            int getServerFd() const;
             int getConnection() const;
             int getMaxTry() const;
 
