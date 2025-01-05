@@ -10,6 +10,8 @@ WebServer::Socket::Socket(int domain, int service,  int protocol, int port, unsi
     memset(this->_address.sin_zero, '\0', sizeof(this->_address.sin_zero));
     // Establish Socket
     this->_sock = socket(domain, service, protocol);
+    // Set Max Try for Socket 
+    this->_max_try = 10;
 }
 
 // Default Destructor
@@ -70,12 +72,4 @@ int WebServer::Socket::getConnection() const { return this->_connection; }
 int WebServer::Socket::getMaxTry() const { return this->_max_try; }
 
 // Setters
-void WebServer::Socket::setConnection(int connection)
-{
-    this->_connection = connection;
-}
-
-void WebServer::Socket::setMaxTry(int max_try)
-{
-    this->_max_try = max_try;
-}
+void WebServer::Socket::setConnection(int connection) { this->_connection = connection; }

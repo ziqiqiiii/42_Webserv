@@ -38,7 +38,6 @@ namespace WebServer
 
             // Setters
             void setConnection(int connection);
-            void setMaxTry(int max_try);
 
             // Socket Class Functions
             void bindConnection();
