@@ -1,5 +1,7 @@
 #pragma once
 
+# include <stdio.h>
+# include <stdlib.h>
 # include <sys/socket.h> // for functions like socket, bind, listen, accept and others
 # include <netinet/in.h> // some macros for socket
 # include <netdb.h> // getaddrinfo
@@ -9,6 +11,10 @@
 # include <iostream>
 # include <unistd.h>
 
+using std::cout;
+using std::endl;
+using std::string;
+
 namespace WebServer
 {
     class Socket
@@ -16,16 +22,28 @@ namespace WebServer
         private:
             int _sock;
             int _connection;
+            int _max_try;
             struct sockaddr_in _address;
         public:
-            Socket(int domain, int service,  int protocol, int port, unsigned long interface);
+            Socket(int domain, int service, int protocol, int port, unsigned long interface);
             ~Socket();
-            virtual int connect_to_network(int sock, struct sockaddr_in address) = 0;
-            void test_connection(int test_variable);
+            Socket(const Socket& temp);
+            Socket &operator=(const Socket &temp);
 
-            //Getters
-            struct sockaddr_in get_address();
-            int get_sock();
-            int get_connection();
+            // Getters
+            struct sockaddr_in getAddress() const;
+            int getSock() const;
+            int getConnection() const;
+            int getMaxTry() const;
+
+            // Setters
+            void setConnection(int connection);
+            void setMaxTry(int max_try);
+
+            // Socket Class Functions
+            void bindConnection();
+            void listenConnection();
+            int acceptConnection();
+            void testConnection(int test_variable);
     };
 }

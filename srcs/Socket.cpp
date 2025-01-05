@@ -4,22 +4,55 @@
 WebServer::Socket::Socket(int domain, int service,  int protocol, int port, unsigned long interface)
 {
     // Define address struct
-    Socket::_address.sin_family = domain;
-    Socket::_address.sin_port = htons(port);
-    Socket::_address.sin_addr.s_addr = htons(interface);
+    this->_address.sin_family = domain;
+    this->_address.sin_port = htons(port);
+    this->_address.sin_addr.s_addr = interface;
+    memset(this->_address.sin_zero, '\0', sizeof(this->_address.sin_zero));
     // Establish Socket
-    Socket::_sock = socket(domain, service, protocol);
-    Socket::test_connection(Socket::_sock);
-    // Establish Network Connection
-    Socket::_connection = connect_to_network(Socket::_sock, Socket::_address);
-    Socket::test_connection(Socket::_connection);
+    this->_sock = socket(domain, service, protocol);
 }
 
 // Default Destructor
 WebServer::Socket::~Socket() {}
 
-// Test connection of virtual function
-void WebServer::Socket::test_connection(int test_variable)
+WebServer::Socket::Socket(const Socket& temp) { *this = temp; }
+
+WebServer::Socket& WebServer::Socket::operator=(const Socket &temp)
+{
+    if (this != &temp) {
+        this->_sock = temp.getSock();
+        this->_connection = temp.getConnection();
+        this->_max_try = temp.getMaxTry();
+        this->_address = temp.getAddress();
+    }
+    return (*this);
+}
+
+//Socket Class Function
+void WebServer::Socket::bindConnection()
+{
+    struct sockaddr_in address = this->getAddress();
+    int addr_len = sizeof(address);
+    this->setConnection(bind(this->getSock(), (struct sockaddr *)&address, addr_len));
+    this->testConnection(this->getConnection());
+}
+
+int WebServer::Socket::acceptConnection()
+{
+    struct sockaddr_in address = this->getAddress();
+    int addr_len = sizeof(address);
+    int new_socket = accept(this->getSock(), (struct sockaddr *)&address, (socklen_t*)&addr_len);
+    this->testConnection(new_socket);
+    return new_socket;
+}
+    
+void WebServer::Socket::listenConnection()
+{
+    this->testConnection(listen(this->getSock(), this->getMaxTry()));
+}
+
+
+void WebServer::Socket::testConnection(int test_variable)
 {
     if (test_variable < 0) {
         perror("Failed to connect ...");
@@ -28,17 +61,21 @@ void WebServer::Socket::test_connection(int test_variable)
 }
 
 // Getters
-struct sockaddr_in WebServer::Socket::get_address()
+struct sockaddr_in WebServer::Socket::getAddress() const { return this->_address; }
+
+int WebServer::Socket::getSock() const { return this->_sock; }
+
+int WebServer::Socket::getConnection() const { return this->_connection; }
+
+int WebServer::Socket::getMaxTry() const { return this->_max_try; }
+
+// Setters
+void WebServer::Socket::setConnection(int connection)
 {
-    return Socket::_address;
+    this->_connection = connection;
 }
 
-int WebServer::Socket::get_sock()
+void WebServer::Socket::setMaxTry(int max_try)
 {
-    return Socket::_sock;
-}
-
-int WebServer::Socket::get_connection()
-{
-    return Socket::_connection;
+    this->_max_try = max_try;
 }
