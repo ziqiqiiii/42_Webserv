@@ -7,7 +7,7 @@ OBJS_PATH		=	./objs/
 HEAD_PATH		=	./includes/
 
 FILES			=	main.cpp \
-					Socket.cpp 
+					$(addprefix Client/, Socket.cpp)
 					
 HEAD_FILES		=	Socket.hpp
 
