@@ -1,4 +1,5 @@
 # include "../../includes/HTTPMessage/HTTPMessage.hpp"
+#include "HTTPMessage.hpp"
 
 HTTPMessage::HTTPMessage() {}
 
@@ -62,11 +63,13 @@ string HTTPMessage::getMessage() const
 	return message;
 }
 
+string HTTPMessage::getStarline() const { return this->_start_line; }
+
 void HTTPMessage::_parseMessage(const string& message)
 {
-	size_t pos;
+    size_t pos;
 
-	pos = message.find(CRLF);
+    pos = message.find(CRLF);
 	if (pos == string::npos)
 		throw HTTPMessage::HeadersDoNotExist();
 	this->_parseStartline(message.substr(0, pos));
@@ -100,4 +103,11 @@ void HTTPMessage::_parseHeaders(const string& headers)
 void HTTPMessage::_parseBody(const string& body)
 {
 	this->_body = body;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::vector<KeyValue>& headers)
+{
+	for (size_t i = 0; i < headers.size(); i++)
+		os << headers[i].key << ": " << headers[i].value << "\n";
+	return os;
 }

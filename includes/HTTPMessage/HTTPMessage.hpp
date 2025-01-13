@@ -58,6 +58,7 @@ class HTTPMessage
         const std::vector<KeyValue> getHeaders() const;
         string getBody() const;
         string getMessage() const;
+		string getStarline() const;
 
         //Exceptions 
         class HeadersDoNotExist: public std::exception
@@ -69,6 +70,7 @@ class HTTPMessage
                 }
         };
 
-
         virtual void checker() = 0;
 };
+
+std::ostream& operator<<(std::ostream& os, const std::vector<KeyValue>& headers);
