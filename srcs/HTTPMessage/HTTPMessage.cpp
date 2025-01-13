@@ -1,4 +1,4 @@
-#include "HTTPMessage.hpp"
+# include "../../includes/HTTPMessage/HTTPMessage.hpp"
 
 HTTPMessage::HTTPMessage() {}
 
@@ -81,10 +81,10 @@ void HTTPMessage::_parseStartline(const string& start_line)
 
 void HTTPMessage::_parseHeaders(const string& headers)
 {
-	size_t pos1, pos2, i;
+	size_t pos1, pos2;
 	string line, name, value;
 
-	pos1, i = 0;
+	pos1 = 0;
 	pos2 = headers.find(CRLF);
 	while (pos2 != string::npos) {
 		line = headers.substr(pos1, pos2 - pos1);
@@ -93,8 +93,7 @@ void HTTPMessage::_parseHeaders(const string& headers)
 		pos2 = pos2 == string::npos ? headers.length() : pos2;
 		name = line.substr(0, line.find(": "));
 		value = line.substr(line.find(": ") + 2);
-		this->_headers[i].key = name;
-		this->_headers[i].value = value;
+		this->_headers.push_back(KeyValue(name, value));
 	}
 }
 
