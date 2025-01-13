@@ -31,15 +31,17 @@ struct KeyValue {
 
 class HTTPMessage
 {
-    private:
-        string  _start_line;
-        std::vector<KeyValue>   _headers;
-        string  _body;
+    protected:
+        string					_start_line;
+        std::vector<KeyValue>	_headers;
+        string					_body;
 
+	private:
         void    _parseMessage(const string& message);
         void    _parseStartline(const string& start_line);
         void    _parseHeaders(const string& headers);
         void    _parseBody(const string& body);
+		
     public:
         HTTPMessage();
         ~HTTPMessage();

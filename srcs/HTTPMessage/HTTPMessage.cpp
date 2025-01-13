@@ -70,7 +70,7 @@ void HTTPMessage::_parseMessage(const string& message)
 	if (pos == string::npos)
 		throw HTTPMessage::HeadersDoNotExist();
 	this->_parseStartline(message.substr(0, pos));
-	this->_parseHeaders(message.substr(pos+2, message.find(FIELD_LINE_SEPARATOR)));
+	this->_parseHeaders(message.substr(pos+2, message.find(FIELD_LINE_SEPARATOR, pos)));
 	this->_parseBody(message.substr(pos + 2));
 }
 
