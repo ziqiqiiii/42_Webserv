@@ -32,15 +32,14 @@ struct KeyValue {
 class HTTPMessage
 {
     protected:
-        string					_start_line;
-        std::vector<KeyValue>	_headers;
-        string					_body;
+        string						_start_line;
+        std::vector<KeyValue>		_headers;
+        string						_body;
 
 	private:
-        void    _parseMessage(const string& message);
-        void    _parseStartline(const string& start_line);
-        void    _parseHeaders(const string& headers);
-        void    _parseBody(const string& body);
+        void    					_parseStartline(const string& start_line);
+        void    					_parseHeaders(const string& headers);
+        void    					_parseBody(const string& body);
 		
     public:
         HTTPMessage();
@@ -50,15 +49,17 @@ class HTTPMessage
         HTTPMessage(const string& message);
 
         //Setters
-        void setHeader(const string& name, const string& value);
-        void setBody(string body);
+        void						setHeader(const string& name, const string& value);
+        void						setBody(string body);
 
         //Getters
-        string getFieldName(const string& name) const;
-        const std::vector<KeyValue> getHeaders() const;
-        string getBody() const;
-        string getMessage() const;
-		string getStarline() const;
+        string						getFieldName(const string& name) const;
+        const std::vector<KeyValue>	getHeaders() const;
+        string						getBody() const;
+        string						getMessage() const;
+		string						getStarline() const;
+
+		void    					parseMessage(const string& message);
 
         //Exceptions 
         class HeadersDoNotExist: public std::exception
@@ -73,4 +74,4 @@ class HTTPMessage
         virtual void checker() = 0;
 };
 
-std::ostream& operator<<(std::ostream& os, const std::vector<KeyValue>& headers);
+std::ostream&	operator<<(std::ostream& os, const std::vector<KeyValue>& headers);
