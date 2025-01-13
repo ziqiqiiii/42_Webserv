@@ -7,7 +7,10 @@ OBJS_PATH		=	./objs/
 HEAD_PATH		=	./includes/
 
 FILES			=	main.cpp \
-					$(addprefix Client/, Socket.cpp)
+					$(addprefix Client/, Socket.cpp) \
+					$(addprefix HTTPMessage/, HTTPMessage.cpp) \
+        			$(addprefix HTTPMessage/HTTPRequest/, HTTPRequest.cpp) \
+        			$(addprefix HTTPMessage/HTTPResponse/, HTTPResponse.cpp) \
 					
 HEAD_FILES		=	Socket.hpp
 
@@ -43,7 +46,7 @@ fclean:			clean
 re:				fclean all
 
 test: all
-	./$(NAME) 3 5 9 7 4
+	./$(NAME)
 -include : ${DEPS}
 
 uml: 
