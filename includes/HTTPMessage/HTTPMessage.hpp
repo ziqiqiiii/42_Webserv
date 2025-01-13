@@ -36,6 +36,7 @@ class HTTPMessage
         std::vector<KeyValue>   _headers;
         string  _body;
 
+        void    _parseMessage(const string& message);
         void    _parseStartline(const string& start_line);
         void    _parseHeaders(const string& headers);
         void    _parseBody(const string& body);
@@ -44,6 +45,7 @@ class HTTPMessage
         ~HTTPMessage();
         HTTPMessage(const HTTPMessage& src);
         HTTPMessage& operator=(const HTTPMessage& src);
+        HTTPMessage(const string& message);
 
         //Setters
         void setHeader(const string& name, const string& value);
@@ -65,7 +67,6 @@ class HTTPMessage
                 }
         };
 
-        void parseMessage(const string& message);
 
         virtual void checker() = 0;
 };
