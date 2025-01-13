@@ -17,8 +17,8 @@ using std::endl;
 using std::string;
 
 //MACROS 
-#define CRLF "\r\n"
-#define FIELD_LINE_SEPARATOR "\r\n\r\n"
+# define CRLF "\r\n"
+# define FIELD_LINE_SEPARATOR "\r\n\r\n"
 
 //Struct for Key-Value pair
 struct KeyValue {
