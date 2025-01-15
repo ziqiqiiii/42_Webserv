@@ -2,7 +2,10 @@
 
 HTTPMessage::HTTPMessage() {}
 
-HTTPMessage::~HTTPMessage() {}
+HTTPMessage::~HTTPMessage()
+{
+	this->_headers.clear();
+}
 
 HTTPMessage::HTTPMessage(const HTTPMessage& src) { *this = src; }
 
