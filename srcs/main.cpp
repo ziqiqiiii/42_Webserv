@@ -1,14 +1,9 @@
-# include "../includes/Socket.hpp"
+# include "../includes/Client/Socket.hpp"
 # include "../includes/HTTPMessage/HTTPRequest/HTTPRequest.hpp"
-
-void signalHandler(int signum) {
-    std::cout << "Interrupt signal (" << signum << ") received.\n";
-    exit(signum); 
-}
 
 int main()
 {
-    signal(SIGINT, signalHandler);
+    signal(SIGINT, Utils::signalHandler);
     int new_socket = -1;
     WebServer::Socket test = WebServer::Socket(AF_INET, SOCK_STREAM, 0, 8080, INADDR_ANY);
     test.bindConnection();

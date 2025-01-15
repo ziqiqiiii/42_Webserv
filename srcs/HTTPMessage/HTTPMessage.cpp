@@ -1,35 +1,5 @@
 # include "../../includes/HTTPMessage/HTTPMessage.hpp"
 
-std::vector<string> splitString(const string& s, const string& del = " ")
-{
-    std::vector<string> tokens;
-    size_t start = 0;
-    size_t end = s.find(del);
-
-    while (end != string::npos) {
-        tokens.push_back(s.substr(start, end - start));
-        start = end + del.size();
-        end = s.find(del, start);
-    }
-    tokens.push_back(s.substr(start, end - start)); // Add the last token
-
-    return tokens;
-}
-	// cout << "index of pos2: " << pos2 << endl;
-	// while (pos2 != string::npos) {
-	// 	line = headers.substr(pos1, pos2 - pos1);
-	// 	cout << "line: " << line << endl;
-	// 	cout << "[inside] index of pos2: " << pos2 << endl;
-	// 	pos2 = pos2 == string::npos ? headers.length() : pos2;
-	// 	name = line.substr(pos1, line.find(": "));
-	// 	value = line.substr(line.find(": ") + 2);
-	// 	cout << name << value << endl;
-	// 	this->_headers.push_back(KeyValue(name, value));
-	// 	cout << this->_headers[i].key << ":" << endl;
-	// 	pos1 = pos2 + 2;
-	// 	pos2 = headers.find(CRLF, pos1);
-	// }
-
 HTTPMessage::HTTPMessage() {}
 
 HTTPMessage::~HTTPMessage() {}
@@ -139,10 +109,10 @@ void HTTPMessage::_parseStartline(const string& start_line)
 void HTTPMessage::_parseHeaders(const string& headers)
 {
 	std::vector<string> key_value;
-	std::vector<string> tmp = splitString(headers, CRLF);
+	std::vector<string> tmp = Utils::splitString(headers, CRLF);
 	for (size_t i = 0; i < tmp.size(); i++)
 	{
-		key_value = splitString(tmp[i], ": ");
+		key_value = Utils::splitString(tmp[i], ": ");
 		this->_headers.push_back(KeyValue(key_value[0], key_value[1]));
 	}
 }

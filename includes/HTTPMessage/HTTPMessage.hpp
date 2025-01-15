@@ -12,6 +12,8 @@
 # include <csignal>
 # include <vector>
 
+# include "../Utils/Utils.hpp"
+
 using std::cout;
 using std::endl;
 using std::string;
