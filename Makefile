@@ -13,6 +13,10 @@ FILES			=	main.cpp \
         			$(addprefix HTTPMessage/HTTPResponse/, HTTPResponse.cpp) \
 					$(addprefix Utils/, Utils.cpp) \
 					$(addprefix Logger/, Logger.cpp) \
+					$(addprefix ConfigParser/, ConfigParser.cpp) \
+					$(addprefix ConfigParser/, Location.cpp) \
+					$(addprefix ConfigParser/, ServerConfig.cpp) \
+					$(addprefix ServerManager/, ServerManager.cpp) \
 					
 HEAD_FILES		=	Socket.hpp
 

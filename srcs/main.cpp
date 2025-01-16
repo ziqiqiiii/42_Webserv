@@ -1,7 +1,10 @@
 # include "../includes/Client/Socket.hpp"
 # include "../includes/HTTPMessage/HTTPRequest/HTTPRequest.hpp"
 # include "../includes/Logger/Logger.hpp"
+# include "../includes/ConfigParser/ConfigParser.hpp"
+# include "../includes/ServerManager/ServerManager.hpp"
 
+/*
 int main()
 {
     signal(SIGINT, Utils::signalHandler);
@@ -44,4 +47,40 @@ int main()
     }
     close(test.getServerFd());
     return 0;
+}
+*/
+
+// ========================TEST FOR PARSER================================//
+// Handles SIGPIPE signals to prevent program termination.
+// If a client disconnects while the server is writing data, SIGPIPE would
+// terminate the server unexpectedly, leading to downtime.
+void handleSigpipe(int sig)
+{ 
+	if(sig){}
+}
+
+int main(int argc, char **argv)
+{
+	try 
+	{
+        signal(SIGINT, Utils::signalHandler);
+		signal(SIGPIPE, handleSigpipe);
+        HTTPRequest request;
+		//Get config file path
+		std::string configFilePath = Utils::getConfigFilePath(argc, argv);
+		//Parse config file for servers
+		ConfigParser	configParser;
+		configParser.createCluster(configFilePath);
+        //configParser.print();
+        //exit(1);
+		ServerManager 	serverManager;
+		serverManager.setupServers(configParser.getServers());
+		serverManager.runServers();
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "Error: " << e.what() << std::endl;
+		return (1);
+	}
+	return (0);
 }
