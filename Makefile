@@ -12,6 +12,7 @@ FILES			=	main.cpp \
         			$(addprefix HTTPMessage/HTTPRequest/, HTTPRequest.cpp) \
         			$(addprefix HTTPMessage/HTTPResponse/, HTTPResponse.cpp) \
 					$(addprefix Utils/, Utils.cpp) \
+					$(addprefix Logger/, Logger.cpp) \
 					
 HEAD_FILES		=	Socket.hpp
 
