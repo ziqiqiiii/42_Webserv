@@ -1,5 +1,6 @@
 # include "../includes/Client/Socket.hpp"
 # include "../includes/HTTPMessage/HTTPRequest/HTTPRequest.hpp"
+# include "../includes/Logger/Logger.hpp"
 
 int main()
 {
@@ -10,33 +11,32 @@ int main()
     test.listenConnection();
     HTTPRequest request;
 
-    std::cout << "+++++++ Waiting for new connection ++++++++" << std::endl;
+    Logger::logMsg(LIGHTMAGENTA, "+++++++ Waiting for new connection ++++++++\n");
     try {
         while (true) {
             new_socket = test.acceptConnection();
-            std::cout << "+++++++ Connection Accepted ++++++++" << std::endl;
+            Logger::logMsg(LIGHTMAGENTA, "+++++++ Connection Accepted ++++++++\n");
 
             char buffer[30000] = {0};
             int valread = read(new_socket, buffer, 30000);
-            std::string hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nnihao world!";
+            string hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nnihao world!";
 
-            std::cout << "------- Header -------" << std::endl;
-            std::cout << buffer << std::endl;
+            Logger::logMsg(YELLOW, "------- Header -------\n");
+            Logger::logMsg(YELLOW, "%s\n", buffer);
             request.parseMessage(buffer);
-            std::cout << "------- Getters -------" << std::endl;
-            std::cout << "Start line: " << request.getStarline() << std::endl;
-            std::cout << "Field line: " << request.getHeaders() << std::endl;
-            std::cout << "Message Body: " << request.getBody() << std::endl;
-
-            std::cout << "+++++++ Sending Message ++++++++" << std::endl;
+            Logger::logMsg(LIGHT_BLUE, "------- Getters -------\n");
+            Logger::logMsg(LIGHT_BLUE, "Start line: %s\n", request.getStarline().c_str());
+            cout << LIGHT_BLUE << "Field line:\n" << request.getHeaders() << endl;
+            Logger::logMsg(LIGHT_BLUE, "Message Body: %s\n", request.getBody().c_str());
+            Logger::logMsg(LIGHT_BLUE, "+++++++ Sending Message ++++++++\n");
             send(new_socket, hello.c_str(), hello.size(), 0);
-            std::cout << "------------------Hello message sent-------------------" << valread << std::endl;
+            Logger::logMsg(LIGHT_BLUE, "------------------Hello message sent-------------------%d\n", valread);
             close(new_socket);
             // Reset the socket descriptor
             new_socket = -1;
         }
     } catch (std::exception &e) {
-        std::cerr << e.what() << std::endl;
+        cerr << e.what() << endl;
         if (new_socket != -1) {
             close(new_socket);
         }

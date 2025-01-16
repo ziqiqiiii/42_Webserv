@@ -1,9 +1,10 @@
 # include "../includes/Utils/Utils.hpp"
+# include "../includes/Logger/Logger.hpp"
 
 void Utils::signalHandler(int signum)
 {
-    std::cout << "Interrupt signal (" << signum << ") received.\n";
-    exit(signum); 
+    Logger::logMsg(RED, "Interrup signal (%d) received.\n", signum);
+    exit(signum);
 }
 
 std::vector<string> Utils::splitString(const string& s, const string&del = " ")
