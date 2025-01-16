@@ -41,6 +41,6 @@ namespace WebServer
             Utils& operator=(const Utils& other);
         public:
             static  void signalHandler(int signum);
-            static  std::vector<string> splitString(const string& s, const string&del);
+            static  std::vector<string> splitString(const string& s, const string& del = " ");
     };
 } // namespace WebServer

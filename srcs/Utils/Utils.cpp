@@ -18,7 +18,7 @@ WebServer::Utils::~Utils() {}
  *
  * @param other The Utils object to copy from.
  */
-WebServer::Utils::Utils(const Utils& other) {*this = other; }
+WebServer::Utils::Utils(const Utils& other) { *this = other; }
 
 /**
  * @brief Assignment operator for Utils.
@@ -27,7 +27,12 @@ WebServer::Utils::Utils(const Utils& other) {*this = other; }
  * @param other The Utils object to assign from.
  * @return Utils& A reference to the updated Utils object.
  */
-WebServer::Utils& WebServer::Utils::operator=(const Utils& other) { return *this; }
+WebServer::Utils& WebServer::Utils::operator=(const Utils& other)
+{
+    if (this != &other)
+        *this = other;
+    return *this; 
+}
 
 /**
  * @brief Handles signals received by the server.
@@ -54,7 +59,7 @@ void WebServer::Utils::signalHandler(int signum)
  * @param del The delimiter used to split the string. Defaults to a single space (" ").
  * @return std::vector<string> A vector containing the split substrings.
  */
-std::vector<string> WebServer::Utils::splitString(const string& s, const string&del = " ")
+std::vector<string> WebServer::Utils::splitString(const string& s, const string& del)
 {
     std::vector<string> tokens;
     size_t start = 0;
