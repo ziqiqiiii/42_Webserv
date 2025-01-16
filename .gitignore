@@ -1,3 +1,4 @@
-webserv
+webserver
 *.o
-.vscode
+.vscode/settings.json
+objs/*
