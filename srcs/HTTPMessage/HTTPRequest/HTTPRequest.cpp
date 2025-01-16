@@ -6,7 +6,6 @@
  */
 HTTPRequest::HTTPRequest() {}
 
-
 /**
  * @brief Destructor for HTTPRequest.
  * Cleans up resources used by the HTTPRequest object.
@@ -38,7 +37,6 @@ HTTPRequest& HTTPRequest::operator=(const HTTPRequest& src)
 	return *this;
 }
 
-
 /**
  * @brief Constructs an HTTPRequest object from a raw HTTP message string.
  *
@@ -49,14 +47,26 @@ HTTPRequest& HTTPRequest::operator=(const HTTPRequest& src)
  */
 HTTPRequest::HTTPRequest(const string& message): HTTPMessage(message)
 {
-	size_t pos, pos1;
-	pos = this->_start_line.find(SP);
-	this->_setMethod(this->_start_line.substr(0, pos));
-	pos1 = this->_start_line.find(SP, pos);
-	this->_setRequestTarget(this->_start_line.substr(pos+2, pos1));
-	pos = pos1;
-	pos1 = this->_start_line.find(SP, pos);
-	this->_setHttpVersion(this->_start_line.substr(pos+2, pos1));
+	std::vector<string> split_string = WebServer::Utils::splitString(this->_start_line);
+	for (size_t i = 0; i < split_string.size(); i++)
+	{
+		switch (i)
+		{
+			case 0:
+				this->_setMethod(split_string[i]);
+				break;
+			case 1:
+				this->_setRequestTarget(split_string[i]);
+				break;
+			case 2:
+				this->_setHttpVersion(split_string[i]);
+				break;
+			default:
+				throw RequestLineError();
+				break;
+		}
+	}
+	this->checker();
 }
 
 // Private Setters
@@ -112,4 +122,3 @@ string HTTPRequest::getHttpVersion() const { return this->_http_version; }
  * This method is a placeholder to be implemented in derived classes.
  */
 void HTTPRequest::checker() {}
-

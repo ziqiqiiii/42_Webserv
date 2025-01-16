@@ -13,6 +13,7 @@
 # include <vector>
 
 # include "../HTTPMessage.hpp"
+# include "../../Utils/Utils.hpp"
 
 using std::cout;
 using std::endl;
@@ -52,6 +53,15 @@ class HTTPRequest: public HTTPMessage
 		string	getRequestTarget()	const;
 		string	getHttpVersion()	const;
 
+        //Exceptions
+        class RequestLineError: public std::exception
+        {
+            public:
+                virtual const char* what() const throw()
+                {
+                    return "Error in request Line in HTTP request header";
+                }
+        };
         // Abstract Method(s)
         /**
          * Abstract method for additional validation or checks specific to HTTP requests.

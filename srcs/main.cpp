@@ -9,7 +9,6 @@ int main()
     WebServer::Socket test = WebServer::Socket(AF_INET, SOCK_STREAM, 0, 8080, INADDR_ANY);
     test.bindConnection();
     test.listenConnection();
-    HTTPRequest request;
     WebServer::Logger *logManager = WebServer::Logger::getInstance();
 
     logManager->logMsg(LIGHTMAGENTA, "+++++++ Waiting for new connection ++++++++\n");
@@ -24,10 +23,11 @@ int main()
 
             logManager->logMsg(YELLOW, "------- Header -------\n");
             logManager->logMsg(YELLOW, "%s\n", buffer);
-            request.parseMessage(buffer);
+            HTTPRequest request(buffer);
             logManager->logMsg(LIGHT_BLUE, "------- Getters -------\n");
             logManager->logMsg(LIGHT_BLUE, "Start line: %s\n", request.getStarline().c_str());
-            cout << LIGHT_BLUE << "Field line:\n" << request.getHeaders() << endl;
+            cout << LIGHT_BLUE << "Field line:\n" << request.getRequestMethod() << endl;
+            cout << LIGHT_BLUE << "test test\n" << request.getHttpVersion() << endl;
             logManager->logMsg(LIGHT_BLUE, "Message Body: %s\n", request.getBody().c_str());
             logManager->logMsg(LIGHT_BLUE, "+++++++ Sending Message ++++++++\n");
             send(new_socket, hello.c_str(), hello.size(), 0);
