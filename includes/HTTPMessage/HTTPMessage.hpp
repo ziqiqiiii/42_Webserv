@@ -46,17 +46,11 @@ class HTTPMessage
         std::vector<KeyValue>		_headers;  /**< A collection of key-value pairs representing the HTTP headers. */
         string						_body; /**< The body content of the HTTP message. */
 
-	private:
-        void    					_parseStartline(const string& start_line);
-        void    					_parseHeaders(const string& headers);
-        void    					_parseBody(const string& body);
-		
     public:
         HTTPMessage();
         ~HTTPMessage();
         HTTPMessage(const HTTPMessage& src);
         HTTPMessage& operator=(const HTTPMessage& src);
-        HTTPMessage(const string& message);
 
         //Setters
         void						setHeader(const string& name, const string& value);
@@ -68,21 +62,6 @@ class HTTPMessage
         string						getBody() const;
         string						getMessage() const;
 		string						getStarline() const;
-
-		void    					parseMessage(const string& message);
-
-        //Exceptions
-        /**
-         * Exception for cases where headers are missing in the HTTP message.
-         */
-        class HeadersDoNotExist: public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return "Headers doesn't exits in HTTP message";
-                }
-        };
 
         // Abstract Method(s)
         /**

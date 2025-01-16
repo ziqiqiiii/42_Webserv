@@ -37,10 +37,15 @@ class HTTPRequest: public HTTPMessage
 		string	_request_target; /**< The target resource of the HTTP request (e.g., "/index.html"). */
 		string	_http_version; /**< The HTTP version used in the request (e.g., "HTTP/1.1"). */
 
+		void	_parseMessage(const string& message);
+        void	_parseStartline(const string& start_line);
+        void	_parseHeaders(const string& headers);
+        void	_parseBody(const string& body);
+
         //Private Setters 
-        void _setMethod(const string& method);
-        void _setRequestTarget(const string& request_target);
-        void _setHttpVersion(const string& http_version);
+        void	_setMethod(const string& method);
+        void	_setRequestTarget(const string& request_target);
+        void	_setHttpVersion(const string& http_version);
     public:
         HTTPRequest();
         ~HTTPRequest();
@@ -54,6 +59,20 @@ class HTTPRequest: public HTTPMessage
 		string	getHttpVersion()	const;
 
         //Exceptions
+		/**
+         * Exception for cases where headers are missing in the HTTP message.
+         */
+        class HeadersDoNotExist: public std::exception
+        {
+            public:
+                virtual const char* what() const throw()
+                {
+                    return "Headers doesn't exits in HTTP message";
+                }
+        };
+		/**
+         * Exception for cases where errors in request line in HTTP Request
+         */
         class RequestLineError: public std::exception
         {
             public:
@@ -62,6 +81,7 @@ class HTTPRequest: public HTTPMessage
                     return "Error in request Line in HTTP request header";
                 }
         };
+
         // Abstract Method(s)
         /**
          * Abstract method for additional validation or checks specific to HTTP requests.
