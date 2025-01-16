@@ -112,10 +112,10 @@ void HTTPMessage::_parseStartline(const string& start_line)
 void HTTPMessage::_parseHeaders(const string& headers)
 {
 	std::vector<string> key_value;
-	std::vector<string> tmp = Utils::splitString(headers, CRLF);
+	std::vector<string> tmp = WebServer::Utils::splitString(headers, CRLF);
 	for (size_t i = 0; i < tmp.size(); i++)
 	{
-		key_value = Utils::splitString(tmp[i], ": ");
+		key_value = WebServer::Utils::splitString(tmp[i], ": ");
 		this->_headers.push_back(KeyValue(key_value[0], key_value[1]));
 	}
 }

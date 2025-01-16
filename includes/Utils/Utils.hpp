@@ -13,9 +13,12 @@ using std::cout;
 using std::endl;
 using std::string;
 
-class Utils
+namespace WebServer
 {
-    public:
-        static  void signalHandler(int signum);
-        static  std::vector<string> splitString(const string& s, const string&del);
-};
+    class Utils
+    {
+        public:
+            static  void signalHandler(int signum);
+            static  std::vector<string> splitString(const string& s, const string&del);
+    };
+} // namespace WebServer

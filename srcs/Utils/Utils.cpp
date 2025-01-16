@@ -1,12 +1,12 @@
 # include "../includes/Utils/Utils.hpp"
 
-void Utils::signalHandler(int signum)
+void WebServer::Utils::signalHandler(int signum)
 {
     std::cout << "Interrupt signal (" << signum << ") received.\n";
     exit(signum); 
 }
 
-std::vector<string> Utils::splitString(const string& s, const string&del = " ")
+std::vector<string> WebServer::Utils::splitString(const string& s, const string&del = " ")
 {
     std::vector<string> tokens;
     size_t start = 0;

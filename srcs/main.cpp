@@ -3,7 +3,7 @@
 
 int main()
 {
-    signal(SIGINT, Utils::signalHandler);
+    signal(SIGINT, WebServer::Utils::signalHandler);
     int new_socket = -1;
     WebServer::Socket test = WebServer::Socket(AF_INET, SOCK_STREAM, 0, 8080, INADDR_ANY);
     test.bindConnection();
