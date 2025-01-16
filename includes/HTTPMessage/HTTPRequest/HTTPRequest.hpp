@@ -21,12 +21,20 @@ using std::string;
 //MACROS 
 # define SP " "
 
+/**
+ * @class HTTPRequest
+ * @brief A class representing an HTTP request message.
+ *
+ * The HTTPRequest class is derived from the HTTPMessage class and provides additional
+ * functionality specific to HTTP requests. It includes attributes and methods for handling
+ * the HTTP method, request target, and HTTP version of the request message.
+ */
 class HTTPRequest: public HTTPMessage
 {
     private:
-        string	_method;
-		string	_request_target;
-		string	_http_version;
+        string	_method;  /**< The HTTP method of the request (e.g., GET, POST). */
+		string	_request_target; /**< The target resource of the HTTP request (e.g., "/index.html"). */
+		string	_http_version; /**< The HTTP version used in the request (e.g., "HTTP/1.1"). */
 
         //Private Setters 
         void _setMethod(const string& method);
@@ -44,5 +52,10 @@ class HTTPRequest: public HTTPMessage
 		string	getRequestTarget()	const;
 		string	getHttpVersion()	const;
 
+        // Abstract Method(s)
+        /**
+         * Abstract method for additional validation or checks specific to HTTP requests.
+         * Must be implemented by derived classes.
+         */
 		void checker();
 };
