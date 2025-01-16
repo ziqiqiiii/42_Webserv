@@ -72,6 +72,16 @@ HTTPRequest::HTTPRequest(const string& message)
 
 
 // Private Parsers
+/**
+ * @brief Parses the raw HTTP message string into components.
+ *
+ * Splits the message into the start-line, headers, and body. Validates the structure
+ * of each component and ensures compliance with HTTP grammar.
+ *
+ * @param message The raw HTTP message as a string.
+ * @throws std::runtime_error If critical components like the start-line or headers are missing.
+ * @throws std::out_of_range If the header length exceeds the message size.
+ */
 void HTTPRequest::_parseMessage(const std::string& message) {
     // Check if the message contains a CRLF to separate the start line from headers
     size_t startLineEnd = message.find(CRLF);
@@ -109,12 +119,29 @@ void HTTPRequest::_parseMessage(const std::string& message) {
     }
 }
 
-
+/**
+ * @brief Parses the start-line of the HTTP request.
+ *
+ * Extracts and validates the HTTP method, request target, and HTTP version
+ * from the start-line. Ensures compliance with HTTP/1.1 specifications.
+ *
+ * @param start_line The start-line string (e.g., "GET /index.html HTTP/1.1").
+ * @throws std::runtime_error If the start-line format is invalid or contains unsupported components.
+ */
 void HTTPRequest::_parseStartline(const string& start_line)
 {
 	this->_start_line = start_line;
 }
 
+/**
+ * @brief Parses the headers section of the HTTP message.
+ *
+ * Splits the headers into key-value pairs and validates each pair. Skips malformed
+ * or whitespace-preceded lines to prevent security vulnerabilities like request smuggling.
+ *
+ * @param headers The headers section as a string.
+ * @throws std::runtime_error If a header line is malformed.
+ */
 void HTTPRequest::_parseHeaders(const string& headers)
 {
 	std::vector<string> key_value;
@@ -125,6 +152,16 @@ void HTTPRequest::_parseHeaders(const string& headers)
 		this->_headers.push_back(KeyValue(key_value[0], key_value[1]));
 	}
 }
+
+/**
+ * @brief Parses the body of the HTTP message.
+ *
+ * Validates the body length against the `Content-Length` header. If the body length
+ * does not match the declared length, an error is thrown.
+ *
+ * @param body The body content as a string.
+ * @throws std::runtime_error If the body length does not match the expected length.
+ */
 
 void HTTPRequest::_parseBody(const string& body)
 {
