@@ -5,7 +5,6 @@
 # include <iostream>
 # include <cstdarg>
 # include <stdio.h>
-# include <mutex>
 
 using std::cout;
 using std::endl;
@@ -39,7 +38,7 @@ namespace WebServer
      *
      * The Logger class provides functionality for logging messages to the console with support
      * for colored text using ANSI escape codes. It also ensures thread safety through the use of
-     * a `std::mutex` and follows the Singleton design pattern to ensure only one instance exists.
+     * a `pthread_mutex_t` and follows the Singleton design pattern to ensure only one instance exists.
      *
      * Key features include:
      * - Logging messages with customizable color formatting.
@@ -51,7 +50,7 @@ namespace WebServer
 	{
 		private:
 			static Logger *instancePtr; /**< Pointer to the Singleton instance of Logger. */
-			static std::mutex mtx; /**< Mutex for thread-safe Singleton access. */
+			static pthread_mutex_t mtx; /**< Mutex for thread-safe Singleton access. */
 
 			Logger();
 			~Logger();

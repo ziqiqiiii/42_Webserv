@@ -36,8 +36,8 @@ WebServer::Logger& WebServer::Logger::operator=(const Logger &other)
     return *this;
 }
 
-WebServer::Logger* WebServer::Logger::instancePtr = nullptr; /**< Static pointer to the Singleton instance of Logger. */
-std::mutex WebServer::Logger::mtx; /**< Mutex to ensure thread safety during Singleton instance creation. */
+WebServer::Logger* WebServer::Logger::instancePtr = NULL; /**< Static pointer to the Singleton instance of Logger. */
+pthread_mutex_t WebServer::Logger::mtx = PTHREAD_MUTEX_INITIALIZER; /**< Mutex to ensure thread safety during Singleton instance creation. */
 
 /**
  * @brief Retrieves the Singleton instance of the Logger class.
@@ -48,11 +48,10 @@ std::mutex WebServer::Logger::mtx; /**< Mutex to ensure thread safety during Sin
  * @return Logger* Pointer to the Singleton instance of the Logger class.
  */
 WebServer::Logger* WebServer::Logger::getInstance() {
-	if (instancePtr == nullptr) {
-		std::lock_guard<std::mutex> lock(mtx);
-		if (instancePtr == nullptr) {
-			instancePtr = new WebServer::Logger();
-		}
+	if (instancePtr == NULL) {
+		pthread_mutex_lock(&mtx);
+		instancePtr = new WebServer::Logger();
+		pthread_mutex_unlock(&mtx);
 	}
 	return instancePtr;
 }
