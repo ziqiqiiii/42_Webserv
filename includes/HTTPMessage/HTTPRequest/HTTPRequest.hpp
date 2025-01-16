@@ -107,6 +107,20 @@ class HTTPRequest: public HTTPMessage
         };
 
         //Exceptions
+		/**
+         * Exception for cases where headers are missing in the HTTP message.
+         */
+        class HeadersDoNotExist: public std::exception
+        {
+            public:
+                virtual const char* what() const throw()
+                {
+                    return "Headers doesn't exits in HTTP message";
+                }
+        };
+		/**
+         * Exception for cases where errors in request line in HTTP Request
+         */
         class RequestLineError: public std::exception
         {
             public:
@@ -115,6 +129,7 @@ class HTTPRequest: public HTTPMessage
                     return "Error in request Line in HTTP request header";
                 }
         };
+
         // Abstract Method(s)
         /**
          * Abstract method for additional validation or checks specific to HTTP requests.
