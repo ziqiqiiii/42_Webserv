@@ -22,7 +22,7 @@ using std::string;
 # define CRLF "\r\n"
 # define FIELD_LINE_SEPARATOR "\r\n\r\n"
 
-//Struct for Key-Value pair
+/**<Struct for Key-Value pair*/
 struct KeyValue {
     string key;
     string value;
@@ -31,12 +31,20 @@ struct KeyValue {
     KeyValue(string key, string value): key(key), value(value) {}
 };
 
+/**
+ * Represents an HTTP message.
+ *
+ * Attributes:
+ *     _start_line (string): The start line of the HTTP message (e.g., request line or status line).
+ *     _headers (std::vector<KeyValue>): A collection of key-value pairs representing the HTTP headers.
+ *     _body (string): The body content of the HTTP message.
+ */
 class HTTPMessage
 {
     protected:
-        string						_start_line;
-        std::vector<KeyValue>		_headers;
-        string						_body;
+        string						_start_line; /**< The start line of the HTTP message. */
+        std::vector<KeyValue>		_headers;  /**< A collection of key-value pairs representing the HTTP headers. */
+        string						_body; /**< The body content of the HTTP message. */
 
 	private:
         void    					_parseStartline(const string& start_line);
@@ -63,7 +71,10 @@ class HTTPMessage
 
 		void    					parseMessage(const string& message);
 
-        //Exceptions 
+        //Exceptions
+        /**
+         * Exception for cases where headers are missing in the HTTP message.
+         */
         class HeadersDoNotExist: public std::exception
         {
             public:
@@ -73,6 +84,11 @@ class HTTPMessage
                 }
         };
 
+        // Abstract Method(s)
+        /**
+         * Abstract method for additional validation or checks.
+         * Must be implemented by derived classes.
+         */
         virtual void checker() = 0;
 };
 
