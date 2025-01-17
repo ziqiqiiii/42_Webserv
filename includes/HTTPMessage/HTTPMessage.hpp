@@ -21,6 +21,14 @@ using std::string;
 # define CRLF "\r\n"
 # define FIELD_LINE_SEPARATOR "\r\n\r\n"
 
+/**
+ * Represents an HTTP message.
+ *
+ * Attributes:
+ *     _start_line (string): The start line of the HTTP message (e.g., request line or status line).
+ *     _headers (std::vector<KeyValue>): A collection of key-value pairs representing the HTTP headers.
+ *     _body (string): The body content of the HTTP message.
+ */
 class HTTPMessage
 {
     protected:
@@ -38,7 +46,6 @@ class HTTPMessage
         ~HTTPMessage();
         HTTPMessage(const HTTPMessage& src);
         HTTPMessage& operator=(const HTTPMessage& src);
-        HTTPMessage(const string& message);
 
         //Setters
         void							setHeader(const string& name, const string& value);
