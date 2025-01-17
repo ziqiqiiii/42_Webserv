@@ -2,3 +2,4 @@ webserver
 *.o
 .vscode/
 objs/*
+*.d
