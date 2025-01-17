@@ -2,56 +2,48 @@
 
 ### Variables
 
-SRCS_PATH		=	./srcs/
-OBJS_PATH		=	./objs/
-HEAD_PATH		=	./includes/
+SRCS_PATH		=	srcs/
+OBJS_PATH		=	objs/
+HEAD_PATH		=	includes/
 
-FILES			=	main.cpp \
-					$(addprefix Client/, Socket.cpp) \
-					$(addprefix HTTPMessage/, HTTPMessage.cpp) \
-        			$(addprefix HTTPMessage/HTTPRequest/, HTTPRequest.cpp) \
-        			$(addprefix HTTPMessage/HTTPResponse/, HTTPResponse.cpp) \
-					$(addprefix Utils/, Utils.cpp) \
-					$(addprefix Logger/, Logger.cpp) \
-					
-HEAD_FILES		=	Socket.hpp
+# Finds every header in the src directory
+FILES			=	$(shell find $(SRCS_PATH) -name '*.cpp')
 
-SRCS			=	${addprefix ${SRCS_PATH}, ${FILES}}
-OBJS			=	${addprefix ${OBJS_PATH}, ${FILES:.cpp=.o}}
-DEPS			=	${addprefix ${OBJS_PATH}, ${FILES:.cpp=.d}}
-HEAD			=	${addprefix ${HEAD_PATH}, ${HEAD_FILES}}
+# Finds every header in the include directory
+HEAD_FILES		=	$(shell find $(HEAD_PATH) -name '*.hpp')
+
+#Finds every directory and subdirectories in include directory and adds -I
+INCLUDES		=	$(addprefix -I, $(shell find $(HEAD_PATH) -type d))
+
+OBJS			=	$(patsubst $(SRCS_PATH)%.cpp, $(OBJS_PATH)%.o, $(FILES))
+DEPS			=	$(patsubst $(SRCS_PATH)%.cpp, $(OBJS_PATH)%.d, $(FILES))
 
 NAME			=	webserver
 
-CC				=	g++
+CC				=	c++
 RM				=	rm -rf
 CFLAGS			=	-Wall -Wextra -Werror -std=c++98
 
-
 ### Commandes
 
-all:			${NAME}
+all:			$(NAME)
 
-${NAME}:		${OBJS}
-				${CC} ${CFLAGS} ${OBJS} -o ${NAME}
+$(NAME):		$(OBJS)
+				$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) -o $(NAME)
 
-${OBJS_PATH}%.o:	${SRCS_PATH}%.cpp
-				mkdir -p ${dir $@}
-				${CC} -c ${CFLAGS} -MMD -MP -I${HEAD_PATH} $< -o $@
+$(OBJS_PATH)%.o:	$(SRCS_PATH)%.cpp
+				@mkdir -p $(dir $@)
+				# @echo includes : $(INCLUDES)
+				$(CC) $(CFLAGS) -MMD -MP $(INCLUDES) -c $< -o $@
+
+-include $(DEPS)
 
 clean:
-				${RM} ${OBJS_PATH}
+				$(RM) $(OBJS_PATH)
 
 fclean:			clean
-				${RM} ${NAME}
+				$(RM) $(NAME)
 
 re:				fclean all
-
-test: all
-	./$(NAME)
--include : ${DEPS}
-
-uml: 
-	dot -Tpng http_server_uml.dot -o http_server_uml.png
 
 .PHONY:			all clean fclean re
