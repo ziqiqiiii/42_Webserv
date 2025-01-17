@@ -10,8 +10,7 @@
 # include <iostream>
 # include <unistd.h>
 # include <csignal>
-# include <vector>
-
+# include <map>
 # include "../Utils/Utils.hpp"
 
 using std::cout;
@@ -22,26 +21,17 @@ using std::string;
 # define CRLF "\r\n"
 # define FIELD_LINE_SEPARATOR "\r\n\r\n"
 
-//Struct for Key-Value pair
-struct KeyValue {
-    string key;
-    string value;
-
-    //Struct Constructor 
-    KeyValue(string key, string value): key(key), value(value) {}
-};
-
 class HTTPMessage
 {
     protected:
-        string						_start_line;
-        std::vector<KeyValue>		_headers;
-        string						_body;
+        string							_start_line;
+        std::map<string, string>		_headers;
+        string							_body;
 
 	private:
-        void    					_parseStartline(const string& start_line);
-        void    					_parseHeaders(const string& headers);
-        void    					_parseBody(const string& body);
+        void    						_parseStartline(const string& start_line);
+        void    						_parseHeaders(const string& headers);
+        void    						_parseBody(const string& body);
 		
     public:
         HTTPMessage();
@@ -51,17 +41,17 @@ class HTTPMessage
         HTTPMessage(const string& message);
 
         //Setters
-        void						setHeader(const string& name, const string& value);
-        void						setBody(string body);
+        void							setHeader(const string& name, const string& value);
+        void							setBody(string body);
 
         //Getters
-        string						getFieldName(const string& name) const;
-        const std::vector<KeyValue>	getHeaders() const;
-        string						getBody() const;
-        string						getMessage() const;
-		string						getStarline() const;
+        string							getFieldName(const string& name) const;
+        const std::map<string, string>	getHeaders() const;
+        string							getBody() const;
+        string							getMessage() const;
+		string							getStarline() const;
 
-		void    					parseMessage(const string& message);
+		void    						parseMessage(const string& message);
 
         //Exceptions 
         class HeadersDoNotExist: public std::exception
@@ -69,11 +59,11 @@ class HTTPMessage
             public:
                 virtual const char* what() const throw()
                 {
-                    return "Headers doesn't exits in HTTP message";
+                    return "Headers don't exist in HTTP message";
                 }
         };
 
         virtual void checker() = 0;
 };
 
-std::ostream&	operator<<(std::ostream& os, const std::vector<KeyValue>& headers);
+std::ostream&	operator<<(std::ostream& os, const std::map<string, string>& headers);

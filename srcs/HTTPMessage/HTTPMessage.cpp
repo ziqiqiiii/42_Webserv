@@ -26,7 +26,7 @@ HTTPMessage::HTTPMessage(const string& message)
 
 void HTTPMessage::setHeader(const string& name, const string& value)
 {
-	this->_headers.push_back(KeyValue(name, value));
+	this->_headers[name] = value;
 }
 
 void HTTPMessage::setBody(string body)
@@ -36,14 +36,18 @@ void HTTPMessage::setBody(string body)
 
 string HTTPMessage::getFieldName(const string& name) const
 {
-	for (size_t i = 0; i < this->_headers.size(); i++) {
-		if (this->_headers[i].key == name)
-			return this->_headers[i].value;
+	try
+	{
+		return this->_headers.at(name);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
 	}
 	return NULL;
 }
 
-const std::vector<KeyValue> HTTPMessage::getHeaders() const
+const std::map<string, string> HTTPMessage::getHeaders() const
 {
 	return this->_headers;
 }
@@ -56,10 +60,9 @@ string HTTPMessage::getBody() const
 string HTTPMessage::getMessage() const
 {
 	string message;
-	size_t size = this->_headers.size();
 
-	for (size_t i = 0; i < size; i++) {
-		message += this->_headers[i].key + ": " + this->_headers[i].value + CRLF;
+	for (std::map<string, string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); it++) {
+		message += it->first + ": " + it->second + CRLF;
 	}
 	message += CRLF + this->_body;
 	return message;
@@ -116,7 +119,7 @@ void HTTPMessage::_parseHeaders(const string& headers)
 	for (size_t i = 0; i < tmp.size(); i++)
 	{
 		key_value = Utils::splitString(tmp[i], ": ");
-		this->_headers.push_back(KeyValue(key_value[0], key_value[1]));
+		this->_headers[key_value[0]] = key_value [1];
 	}
 }
 
@@ -125,9 +128,11 @@ void HTTPMessage::_parseBody(const string& body)
 	this->_body = body;
 }
 
-std::ostream& operator<<(std::ostream& os, const std::vector<KeyValue>& headers)
+std::ostream& operator<<(std::ostream& os, const std::map<std::string, std::string>& headers)
 {
-	for (size_t i = 0; i < headers.size(); i++)
-		os << headers[i].key << ": " << headers[i].value << "\n";
-	return os;
+    for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it)
+    {
+        os << it->first << ": " << it->second << "\n";
+    }
+    return os;
 }
