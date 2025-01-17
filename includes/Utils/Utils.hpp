@@ -13,6 +13,7 @@
 # include <sstream>
 # include <iterator>
 # include <fstream>
+# include "../../includes/Logger/Logger.hpp"
 
 using std::cout;
 using std::endl;
@@ -32,17 +33,36 @@ enum PathType
 	STATFAIL = -1
 };
 
-class Utils
+namespace WebServer
 {
-    public:
-        static  void signalHandler(int signum);
-        static  std::vector<string> splitString(const string& s, const string&del);
-        static PathType getPathType(const std::string &path);
-        static int ft_stoi(std::string str);
-        static std::string statusCodeString(short statusCode);
-        static int	checkFile(const std::string &path, int mode);
-        static std::string readFile(const std::string &path);
-        static int fileExistReadable(const std::string &path, const std::string &index);
-        static bool isValidLocationPath(const std::string &path);
-        static std::string getConfigFilePath(int argc, char** argv);
-};
+	/**
+     * @class Utils
+     * @brief A utility class providing static helper functions for common tasks.
+     *
+     * The Utils class offers utility functions for tasks such as handling signals and
+     * splitting strings. All methods are static, and the class cannot be instantiated.
+     *
+     * Key features include:
+     * - Signal handling for the server.
+     * - String manipulation utilities.
+     */
+	class Utils
+    {
+        private:
+            Utils();
+            ~Utils();
+            Utils(const Utils& other);
+            Utils& operator=(const Utils& other);
+        public:
+            static  void signalHandler(int signum);
+            static  std::vector<string> splitString(const string& s, const string& del = " ");
+			static PathType getPathType(const std::string &path);
+        	static int ft_stoi(std::string str);
+        	static std::string statusCodeString(short statusCode);
+        	static int	checkFile(const std::string &path, int mode);
+        	static std::string readFile(const std::string &path);
+        	static int fileExistReadable(const std::string &path, const std::string &index);
+        	static bool isValidLocationPath(const std::string &path);
+        	static std::string getConfigFilePath(int argc, char** argv);
+    };
+} // namespace WebServer

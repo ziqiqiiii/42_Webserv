@@ -1,14 +1,66 @@
 # include "../includes/Utils/Utils.hpp"
-# include "../includes/Logger/Logger.hpp"
-# include "sys/stat.h"
+# include <sys/stat.h>
 
-void Utils::signalHandler(int signum)
+/**
+ * @brief Default constructor for Utils.
+ * Private to prevent instantiation.
+ */
+WebServer::Utils::Utils() {}
+
+/**
+ * @brief Destructor for Utils.
+ * Private to prevent deletion of instances.
+ */
+WebServer::Utils::~Utils() {}
+
+/**
+ * @brief Copy constructor for Utils.
+ * Private to prevent copying of the Utils class.
+ *
+ * @param other The Utils object to copy from.
+ */
+WebServer::Utils::Utils(const Utils& other) { *this = other; }
+
+/**
+ * @brief Assignment operator for Utils.
+ * Private to prevent assignment of the Utils class.
+ *
+ * @param other The Utils object to assign from.
+ * @return Utils& A reference to the updated Utils object.
+ */
+WebServer::Utils& WebServer::Utils::operator=(const Utils& other)
 {
-    Logger::logMsg(RED, "Interrup signal (%d) received.\n", signum);
+    if (this != &other)
+        *this = other;
+    return *this; 
+}
+
+/**
+ * @brief Handles signals received by the server.
+ *
+ * Logs the received signal and exits the application.
+ *
+ * @param signum The signal number to handle (e.g., SIGINT, SIGTERM).
+ */
+void WebServer::Utils::signalHandler(int signum)
+{
+    WebServer::Logger *logManager = WebServer::Logger::getInstance();
+
+    logManager->logMsg(RED, "Interrup signal (%d) received.\n", signum);
     exit(signum);
 }
 
-std::vector<string> Utils::splitString(const string& s, const string&del = " ")
+/**
+ * @brief Splits a string into a vector of substrings based on a specified delimiter.
+ *
+ * This method takes an input string and a delimiter, then splits the string into
+ * substrings wherever the delimiter occurs. The substrings are returned as a vector.
+ *
+ * @param s The input string to split.
+ * @param del The delimiter used to split the string. Defaults to a single space (" ").
+ * @return std::vector<string> A vector containing the split substrings.
+ */
+std::vector<string> WebServer::Utils::splitString(const string& s, const string& del)
 {
     std::vector<string> tokens;
     size_t start = 0;
@@ -25,7 +77,7 @@ std::vector<string> Utils::splitString(const string& s, const string&del = " ")
 }
 
 // Check path is file, directory or other
-PathType Utils::getPathType(const std::string &path)
+PathType WebServer::Utils::getPathType(const std::string &path)
 {
 	struct stat	file_stat;
 
@@ -41,7 +93,7 @@ PathType Utils::getPathType(const std::string &path)
 	return (STATFAIL); // stat failed
 }
 
-int Utils::ft_stoi(std::string str)
+int WebServer::Utils::ft_stoi(std::string str)
 {
 	std::stringstream ss(str);
 	if (str.length() > 10)
@@ -56,12 +108,12 @@ int Utils::ft_stoi(std::string str)
 	return (res);
 }
 
-int	Utils::checkFile(const std::string &path, int mode)
+int	WebServer::Utils::checkFile(const std::string &path, int mode)
 {
 	return (access(path.c_str(), mode));
 }
 
-std::string Utils::readFile(const std::string &path)
+std::string WebServer::Utils::readFile(const std::string &path)
 {
 	if (path.empty())
 		return (NULL);
@@ -76,7 +128,7 @@ std::string Utils::readFile(const std::string &path)
 }
 
 //Check file exists and is readable for two locations(index or path+index)
-int Utils::fileExistReadable(const std::string &path, const std::string &index)
+int WebServer::Utils::fileExistReadable(const std::string &path, const std::string &index)
 {
 	std::string fullPath1 = index;
 	std::string fullPath2 = path + index;
@@ -86,7 +138,7 @@ int Utils::fileExistReadable(const std::string &path, const std::string &index)
 	return (-1);
 }
 
-bool Utils::isValidLocationPath(const std::string &path)
+bool WebServer::Utils::isValidLocationPath(const std::string &path)
 {
 	// Define invalid characters
 	static const std::string invalid_chars = "*?<>|\"\\\0";
@@ -112,18 +164,19 @@ bool Utils::isValidLocationPath(const std::string &path)
 	return (true);
 }
 
-std::string Utils::getConfigFilePath(int argc, char** argv)
+std::string WebServer::Utils::getConfigFilePath(int argc, char** argv)
 {
 	if (argc > 2)
 	{
-		Logger::logMsg(RED, "Error: Wrong number of arguments.");
-		Logger::logMsg(RED, "Usage: ./webserv or ./webserv [config file path]");
+		WebServer::Logger *logManager = WebServer::Logger::getInstance();
+		logManager->logMsg(RED, "Error: Wrong number of arguments.");
+		logManager->logMsg(RED, "Usage: ./webserv or ./webserv [config file path]");
 		throw std::invalid_argument("Invalid arguments.");
 	}
 	return ((argc == 1) ? "configs/default.conf" : argv[1]);
 }
 
-std::string Utils::statusCodeString(short statusCode)
+std::string WebServer::Utils::statusCodeString(short statusCode)
 {
 	switch (statusCode)
 	{

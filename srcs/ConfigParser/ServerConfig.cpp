@@ -125,7 +125,7 @@ void ServerConfig::setHost(std::string parameter)
 void ServerConfig::setRoot(std::string root)
 {
 	checkToken(root);
-	if (Utils::getPathType(root) == IS_DIRECTORY)
+	if (WebServer::Utils::getPathType(root) == IS_DIRECTORY)
 	{
 		this->_root = root;
 		return ;
@@ -133,7 +133,7 @@ void ServerConfig::setRoot(std::string root)
 	char dir[PATH_MAX];
 	getcwd(dir, PATH_MAX);
 	std::string full_root = dir + root;
-	if (Utils::getPathType(full_root) != IS_DIRECTORY)
+	if (WebServer::Utils::getPathType(full_root) != IS_DIRECTORY)
 		throw ErrorException("Wrong syntax for root: " + root);
 	this->_root = full_root;
 }
@@ -148,7 +148,7 @@ void ServerConfig::setPort(std::string parameter)
 		if (!std::isdigit(parameter[i]))
 			throw ErrorException("Wrong syntax for port: " + parameter);
 	}
-	port = Utils::ft_stoi(parameter);
+	port = WebServer::Utils::ft_stoi(parameter);
 	if (port < 1 || port > 65636)
 		throw ErrorException("Wrong syntax for port: " + parameter);
 	this->_port = (uint16_t)port;
@@ -163,7 +163,7 @@ void ServerConfig::setClientMaxBodySize(std::string parameter)
 		if (!std::isdigit(parameter[i]))
 			throw ErrorException("Wrong syntax for client_max_body_size: " + parameter);
 	}
-	body_size = Utils::ft_stoi(parameter);
+	body_size = WebServer::Utils::ft_stoi(parameter);
 	if (!body_size)
 		throw ErrorException("Wrong syntax for client_max_body_size: " + parameter);
 	this->_client_max_body_size = body_size;
@@ -200,18 +200,18 @@ void ServerConfig::setErrorPages(const std::vector<std::string> &parameter)
 		//check error code is 3 digits
 		if (parameter[i].size() != 3)
 			throw ErrorException("Error code is invalid");
-		short code_error = Utils::ft_stoi(parameter[i]);
-		if (Utils::statusCodeString(code_error)  == "Undefined" || code_error < 400)
+		short code_error = WebServer::Utils::ft_stoi(parameter[i]);
+		if (WebServer::Utils::statusCodeString(code_error)  == "Undefined" || code_error < 400)
 			throw ErrorException ("Incorrect error code: " + parameter[i]);
 		i++; //Move to the next string which is the path to the error page
 		std::string path = parameter[i];
 		checkToken(path);
-		if (Utils::getPathType(path) == IS_DIRECTORY) //If path is directory
+		if (WebServer::Utils::getPathType(path) == IS_DIRECTORY) //If path is directory
 			throw ErrorException ("Incorrect path for error page file: " + path);
-		if (Utils::getPathType(this->_root + path) != IS_FILE) //If path is not file
+		if (WebServer::Utils::getPathType(this->_root + path) != IS_FILE) //If path is not file
 			throw ErrorException ("Incorrect path for error page file: " + this->_root + path);
 		// If path does not exist or is not accessible
-		if (Utils::checkFile(this->_root + path, F_OK) == -1 || Utils::checkFile(this->_root + path, R_OK) == -1)
+		if (WebServer::Utils::checkFile(this->_root + path, F_OK) == -1 || WebServer::Utils::checkFile(this->_root + path, R_OK) == -1)
 			throw ErrorException ("Error page file :" + this->_root + path + " is not accessible");
 		std::map<short, std::string>::iterator it = this->_error_pages.find(code_error);
 		//If error code mapping is found, overwrite, else add new map entry
@@ -292,7 +292,7 @@ bool ServerConfig::isValidErrorPages()
 	{
 		if (it->first < 100 || it->first > 599)
 			return (false);
-		if (Utils::checkFile(getRoot() + it->second, F_OK) < 0 || Utils::checkFile(getRoot() + it->second, R_OK) < 0)
+		if (WebServer::Utils::checkFile(getRoot() + it->second, F_OK) < 0 || WebServer::Utils::checkFile(getRoot() + it->second, R_OK) < 0)
 			return (false);
 	}
 	return (true);
@@ -306,17 +306,17 @@ int ServerConfig::isValidLocation(Location &location) const
 		if (location.getCgiPath().empty() || location.getCgiExtension().empty() || location.getIndexLocation().empty())
 			return (1);
 
-		if (Utils::checkFile(location.getIndexLocation(), R_OK) < 0)
+		if (WebServer::Utils::checkFile(location.getIndexLocation(), R_OK) < 0)
 		{
 			//use location's root or cwd and combine with path to get Index location
 			std::string path = location.getRootLocation() + location.getPath() + "/" + location.getIndexLocation();
-			if (Utils::getPathType(path) != IS_FILE)
+			if (WebServer::Utils::getPathType(path) != IS_FILE)
 			{				
 				std::string root = getcwd(NULL, 0);
 				location.setRootLocation(root);
 				path = root + location.getPath() + "/" + location.getIndexLocation();
 			}
-			if (path.empty() || Utils::getPathType(path) != IS_FILE || Utils::checkFile(path, R_OK) < 0)
+			if (path.empty() || WebServer::Utils::getPathType(path) != IS_FILE || WebServer::Utils::checkFile(path, R_OK) < 0)
 				return (1);
 		}
 		// check if the number of Cgi paths matches with number of extensions
@@ -325,7 +325,7 @@ int ServerConfig::isValidLocation(Location &location) const
 		std::vector<std::string>::const_iterator it;
 		for (it = location.getCgiPath().begin(); it != location.getCgiPath().end(); ++it)
 		{
-			if (Utils::getPathType(*it) == STATFAIL)
+			if (WebServer::Utils::getPathType(*it) == STATFAIL)
 				return (1);
 		}
 		std::vector<std::string>::const_iterator it_path;
@@ -353,23 +353,23 @@ int ServerConfig::isValidLocation(Location &location) const
 	}
 	else
 	{
-		if (Utils::isValidLocationPath(location.getPath()) == false)
+		if (WebServer::Utils::isValidLocationPath(location.getPath()) == false)
 			return (2);
 		if (location.getRootLocation().empty()) //set default root
 		{
 			location.setRootLocation(this->_root);
 		}
 		//Validate index, return and alias
-		if (Utils::fileExistReadable(location.getRootLocation() + location.getPath() + "/", location.getIndexLocation()))
+		if (WebServer::Utils::fileExistReadable(location.getRootLocation() + location.getPath() + "/", location.getIndexLocation()))
 			return (5);
 		if (!location.getReturn().empty())
 		{
-			if (Utils::fileExistReadable(location.getRootLocation(), location.getReturn()))
+			if (WebServer::Utils::fileExistReadable(location.getRootLocation(), location.getReturn()))
 				return (3);
 		}
 		if (!location.getAlias().empty())
 		{
-			if (Utils::fileExistReadable(location.getRootLocation(), location.getAlias()))
+			if (WebServer::Utils::fileExistReadable(location.getRootLocation(), location.getAlias()))
 			 	return (4);
 		}
 	}
@@ -481,7 +481,8 @@ void	ServerConfig::setupServerSocket(void)
 	// returns fd for the socket or -1 if fail
 	if ((_listen_fd = socket(AF_INET, SOCK_STREAM, 0) )  == -1 )
 	{
-		Logger::logMsg(RED, "webserv: socket error %s   Closing ....", strerror(errno));
+		WebServer::Logger *logManager = WebServer::Logger::getInstance();
+		logManager->logMsg(RED, "webserv: socket error %s   Closing ....", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -502,7 +503,8 @@ void	ServerConfig::setupServerSocket(void)
 	// bind the socket to specified IP address and port, returns -1 if fail
 	if (bind(_listen_fd, (struct sockaddr *) &_server_address, sizeof(_server_address)) == -1)
 	{
-		Logger::logMsg(RED, "webserv: bind error %s   Closing ....", strerror(errno));
+		WebServer::Logger *logManager = WebServer::Logger::getInstance();
+		logManager->logMsg(RED, "webserv: bind error %s   Closing ....", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 }
@@ -514,7 +516,7 @@ void ServerConfig::handleRoot(size_t& i, Location& new_location, std::vector<std
 	if (!new_location.getRootLocation().empty()) //check if root is already set
 		throw ErrorException("Root of location is duplicated");
 	checkToken(parameter[++i]);
-	if (Utils::getPathType(parameter[i]) == IS_DIRECTORY) //if directory
+	if (WebServer::Utils::getPathType(parameter[i]) == IS_DIRECTORY) //if directory
 		new_location.setRootLocation(parameter[i]);
 	else
 		new_location.setRootLocation(this->_root + parameter[i]); //if not directory

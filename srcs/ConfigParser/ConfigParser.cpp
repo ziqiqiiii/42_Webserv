@@ -59,11 +59,11 @@ int ConfigParser::createCluster(const std::string &config_file)
 {
 	std::string		content;
 
-	if (Utils::getPathType(config_file) != IS_FILE)
+	if (WebServer::Utils::getPathType(config_file) != IS_FILE)
 		throw ErrorException("File is invalid");
-	if (Utils::checkFile(config_file, R_OK) == -1)
+	if (WebServer::Utils::checkFile(config_file, R_OK) == -1)
 		throw ErrorException("File is not accessible");
-	content = Utils::readFile(config_file);
+	content = WebServer::Utils::readFile(config_file);
 	if (content.empty())
 		throw ErrorException("File is empty");
 	removeComments(content);
@@ -278,7 +278,7 @@ void ConfigParser::finalizeServerConfig(ServerConfig &server)
 		server.setHost("localhost;");
 	if (server.getIndex().empty())
 		server.setIndex("index.html;");
-	if (Utils::fileExistReadable(server.getRoot(), server.getIndex()))
+	if (WebServer::Utils::fileExistReadable(server.getRoot(), server.getIndex()))
 		throw ErrorException("Index from config file not found or unreadable");
 	if (server.checkLocationsDup())
 		throw ErrorException("Duplicate locations in server configuration");

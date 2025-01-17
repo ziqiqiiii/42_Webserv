@@ -9,7 +9,8 @@ ServerManager::~ServerManager(){}
 void ServerManager::setupServers(std::vector<ServerConfig> servers)
 {
 	std::cout << std::endl;
-	Logger::logMsg(CYAN, "Initializing Servers...");
+	WebServer::Logger *logManager = WebServer::Logger::getInstance();
+	logManager->logMsg(CYAN, "Initializing Servers...");
 	_servers = servers;
 	bool serverdup;
 	for (size_t i = 0; i < _servers.size(); ++i)
@@ -36,7 +37,7 @@ void ServerManager::setupServers(std::vector<ServerConfig> servers)
 		// size: size of the destination buffer. Must be large enough to hold result string. For IPv4 at least INET_ADDSTRLEN. Defined as 16 in <netinet/in.h>
 		// Returns dst, or NULL if fail
 		char buf[INET_ADDRSTRLEN];
-		Logger::logMsg(CYAN, "Server Created: ServerName[%s] Host[%s] Port[%d]",
+		logManager->logMsg(CYAN, "Server Created: ServerName[%s] Host[%s] Port[%d]",
 			_servers[i].getServerName().c_str(),
 			inet_ntop(AF_INET, &_servers[i].getHost(), buf, INET_ADDRSTRLEN),
 			_servers[i].getPort());
@@ -70,6 +71,7 @@ void	ServerManager::runServers()
 		timer.tv_usec = 0;
 		recv_set_cpy = _recv_fd_pool;
 		write_set_cpy = _write_fd_pool;
+		WebServer::Logger *logManager = WebServer::Logger::getInstance();
 		//select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
 		//nfds: Highest-numbered fd + 1 for monitoring
 		//exceptfds: Fd set to monitor for errors
@@ -80,7 +82,7 @@ void	ServerManager::runServers()
 		// Interrupted System Call(EINTR), Invalid Parameters(EBADF, EINVAL), Resource Issues(ENOMEM)
 		if ((select_ret = select(_biggest_fd + 1, &recv_set_cpy, &write_set_cpy, NULL, &timer)) < 0)
 		{
-			Logger::logMsg(RED, "webserv: select error %s   Closing ....", strerror(errno));
+			logManager->logMsg(RED, "webserv: select error %s   Closing ....", strerror(errno));
 			exit(1);
 		}
 		//FD_ISSET(int d, fd_set *set)
@@ -108,16 +110,16 @@ void	ServerManager::acceptNewConnection(ServerConfig &serv)
 	long				client_address_size = sizeof(client_address);
 	int					client_socket;
 	char				buf[INET_ADDRSTRLEN];
-	HTTPRequest			request;
 
 	//accept() accepts new incoming connection, will block until connection request is received
 	//client_address contains client's address information(IP and Port)
 	//Returns new fd used for communication with the client
 	//Returns -1 if  fail
+	WebServer::Logger *logManager = WebServer::Logger::getInstance();
 	if ((client_socket = accept(serv.getFd(), (struct sockaddr *)&client_address,
 	 (socklen_t*)&client_address_size)) == -1)
 	{
-		Logger::logMsg(RED, "webserv: accept error %s", strerror(errno));
+		logManager->logMsg(RED, "webserv: accept error %s", strerror(errno));
 		return ;
 	}
 	//inet_ntop converts an IP address from binary format to string
@@ -128,35 +130,36 @@ void	ServerManager::acceptNewConnection(ServerConfig &serv)
 	// size: size of the destination buffer. Must be large enough to hold result string.
 	// For IPv4 at least INET_ADDSTRLEN. Defined as 16 in <netinet/in.h>
 	// Returns dst, or NULL if fail
-	Logger::logMsg(LIGHT_BLUE, "New Connection From %s, Assigned Socket %d",inet_ntop(AF_INET, &client_address, buf, INET_ADDRSTRLEN), client_socket);
+	logManager->logMsg(LIGHT_BLUE, "New Connection From %s, Assigned Socket %d",inet_ntop(AF_INET, &client_address, buf, INET_ADDRSTRLEN), client_socket);
 	addToSet(client_socket, _recv_fd_pool); //add client socket to recv fd pool
 	/*
 	if (fcntl(client_socket, F_SETFL, O_NONBLOCK) < 0) //set to non-block mode
 	{
-		Logger::logMsg(RED, "webserv: fcntl error %s", strerror(errno));
+		logManager->logMsg(RED, "webserv: fcntl error %s", strerror(errno));
 		removeFromSet(client_socket, _recv_fd_pool);
 		close(client_socket);
 		return ;
 	}
 	*/
-	Logger::logMsg(LIGHTMAGENTA, "+++++++ Connection Accepted ++++++++\n");
+	logManager->logMsg(LIGHTMAGENTA, "+++++++ Connection Accepted ++++++++\n");
 
 	char buffer[30000] = {0};
 	int valread = read(client_socket, buffer, 30000);
 	string hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nnihao world!";
-
-	Logger::logMsg(YELLOW, "------- Header -------\n");
-	Logger::logMsg(YELLOW, "%s\n", buffer);
-	request.parseMessage(buffer);
-	Logger::logMsg(LIGHT_BLUE, "------- Getters -------\n");
-	Logger::logMsg(LIGHT_BLUE, "Start line: %s\n", request.getStarline().c_str());
-	cout << LIGHT_BLUE << "Field line:\n" << request.getHeaders() << endl;
-	Logger::logMsg(LIGHT_BLUE, "Message Body: %s\n", request.getBody().c_str());
-	Logger::logMsg(LIGHT_BLUE, "+++++++ Sending Message ++++++++\n");
-	send(client_socket, hello.c_str(), hello.size(), 0);
-	Logger::logMsg(LIGHT_BLUE, "------------------Hello message sent-------------------%d\n", valread);
-	close(client_socket);
+	logManager->logMsg(YELLOW, "------- Header -------\n");
+    logManager->logMsg(YELLOW, "%s\n", buffer);
+    HTTPRequest request(buffer);
+    logManager->logMsg(LIGHT_BLUE, "------- Getters -------\n");
+    logManager->logMsg(LIGHT_BLUE, "Start line: %s\n", request.getStarline().c_str());
+    cout << LIGHT_BLUE << "Field line:\n" << request.getRequestMethod() << endl;
+    cout << LIGHT_BLUE << "test test\n" << request.getHttpVersion() << endl;
+    logManager->logMsg(LIGHT_BLUE, "Message Body: %s\n", request.getBody().c_str());
+    logManager->logMsg(LIGHT_BLUE, "+++++++ Sending Message ++++++++\n");
+    send(client_socket, hello.c_str(), hello.size(), 0);
+    logManager->logMsg(LIGHT_BLUE, "------------------Hello message sent-------------------%d\n", valread);
+    close(client_socket);
 	removeFromSet(client_socket, _recv_fd_pool);
+	client_socket = -1;
 }
 
 /* initialize recv+write fd_sets and add all server listening sockets to _recv_fd_pool. */
@@ -169,6 +172,7 @@ void	ServerManager::initializeSets()
 	//FD_CLR remove a fd from the set.
 	FD_ZERO(&_recv_fd_pool);
 	FD_ZERO(&_write_fd_pool);
+	WebServer::Logger *logManager = WebServer::Logger::getInstance();
 
 	//listen() prepares a socket to accept incoming connections from clients
 	//int listen(int fd, int backlog)
@@ -181,7 +185,7 @@ void	ServerManager::initializeSets()
 		//Now it calles listen() twice on even if two servers have the same host:port
 		if (listen(it->getFd(), 512) == -1)
 		{
-			Logger::logMsg(RED, "webserv: listen error: %s   Closing....", strerror(errno));
+			logManager->logMsg(RED, "webserv: listen error: %s   Closing....", strerror(errno));
 			exit(EXIT_FAILURE);
 		}
 		
@@ -202,7 +206,7 @@ void	ServerManager::initializeSets()
 		
 		if (fcntl(it->getFd(), F_SETFL, O_NONBLOCK) < 0)
 		{
-			Logger::logMsg(RED, "webserv: fcntl error: %s   Closing....", strerror(errno));
+			logManager->logMsg(RED, "webserv: fcntl error: %s   Closing....", strerror(errno));
 			exit(EXIT_FAILURE);
 		}
 		//add server listen socket to recv fd pool

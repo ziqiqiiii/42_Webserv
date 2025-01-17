@@ -59,7 +59,7 @@ void Location::setPath(std::string parameter)
 
 void Location::setRootLocation(std::string parameter)
 {
-	if (Utils::getPathType(parameter) != IS_DIRECTORY)
+	if (WebServer::Utils::getPathType(parameter) != IS_DIRECTORY)
 		throw ServerConfig::ErrorException("Wrong root of location: " + parameter);
 	this->_root = parameter;
 }
@@ -144,9 +144,9 @@ void Location::setMaxBodySize(std::string parameter)
 		if (parameter[i] < '0' || parameter[i] > '9')
 			throw ServerConfig::ErrorException("Wrong syntax: client_max_body_size: " + parameter);
 	}
-	if (!Utils::ft_stoi(parameter))
+	if (!WebServer::Utils::ft_stoi(parameter))
 		throw ServerConfig::ErrorException("Wrong syntax: client_max_body_size:" + parameter);
-	body_size = Utils::ft_stoi(parameter);
+	body_size = WebServer::Utils::ft_stoi(parameter);
 	this->_client_max_body_size = body_size;
 }
 
