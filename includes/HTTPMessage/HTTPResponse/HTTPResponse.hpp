@@ -1,32 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HTTPResponse.cpp                                   :+:      :+:    :+:   */
+/*   HTTPResponse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amaligno <amaligno@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/16 17:25:41 by amaligno          #+#    #+#             */
-/*   Updated: 2025/01/17 18:30:05 by amaligno         ###   ########.fr       */
+/*   Created: 2025/01/17 17:25:31 by amaligno          #+#    #+#             */
+/*   Updated: 2025/01/17 18:09:06 by amaligno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "HTTPResponse.hpp"
+#ifndef HTTPRESPONSE_HPP
+# define HTTPRESPONSE_HPP
 
-HTTPResponse::HTTPResponse()
-{
-}
+#include "HTTPMessage.hpp"
 
-HTTPResponse::HTTPResponse(HTTPResponse &copy)
-{
-	*this = copy;
-}
+#include <string>
 
-HTTPResponse::~HTTPResponse()
+class HTTPResponse : public HTTPMessage
 {
-}
+	public:
+	//Constructors
+		HTTPResponse();
+		HTTPResponse(HTTPResponse &copy);
+	//Destructor
+		~HTTPResponse();
+	//Operator Overloads
+		HTTPResponse	&operator=(HTTPResponse &copy);
+		
+	private:
+};
 
-HTTPResponse	&HTTPResponse::operator=(HTTPResponse &copy)
-{
-	HTTPMessage::operator=(copy);
-	return *this;
-}
+#endif
