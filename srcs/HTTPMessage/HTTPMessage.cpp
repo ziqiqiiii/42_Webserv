@@ -1,5 +1,7 @@
 # include "../../includes/HTTPMessage/HTTPMessage.hpp"
 
+using WebServer::Utils;
+
 /**
  * Default constructor for the HTTPMessage class.
  * Initializes an empty HTTPMessage object.
