@@ -48,25 +48,6 @@ HTTPRequest& HTTPRequest::operator=(const HTTPRequest& src)
 HTTPRequest::HTTPRequest(const string& message)
 {
 	this->_parseMessage(message);
-	std::vector<string> split_string = WebServer::Utils::splitString(this->_start_line);
-	for (size_t i = 0; i < split_string.size(); i++)
-	{
-		switch (i)
-		{
-			case 0:
-				this->_setMethod(split_string[i]);
-				break;
-			case 1:
-				this->_setRequestTarget(split_string[i]);
-				break;
-			case 2:
-				this->_setHttpVersion(split_string[i]);
-				break;
-			default:
-				throw RequestLineError();
-				break;
-		}
-	}
 	this->checker();
 }
 
@@ -117,6 +98,19 @@ void HTTPRequest::_parseMessage(const std::string& message) {
     if (bodyStart < message.size()) {
         this->_parseBody(message.substr(bodyStart));
     }
+
+    // Split the start line into components
+    std::vector<string> split_string = WebServer::Utils::splitString(this->_start_line);
+    if (split_string.size() != 3)
+        throw RequestLineError();
+
+    // Set method, request target, and HTTP version
+    this->_setMethod(split_string[0]);
+    this->_setRequestTarget(split_string[1]);
+    this->_setHttpVersion(split_string[2]);
+
+    // Clear the split string vector
+    split_string.clear();
 }
 
 /**
@@ -223,5 +217,5 @@ string HTTPRequest::getHttpVersion() const { return this->_http_version; }
 void HTTPRequest::checker()
 {
 	std::vector<KeyValue> headers = this->getHeaders();
-
+	
 }
