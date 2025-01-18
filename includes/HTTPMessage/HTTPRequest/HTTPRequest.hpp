@@ -57,54 +57,6 @@ class HTTPRequest: public HTTPMessage
 		string	getRequestMethod()	const;
 		string	getRequestTarget()	const;
 		string	getHttpVersion()	const;
-		
-		//Exceptions
-		/**
-         * Exception for cases where headers are missing in the HTTP message.
-         */
-        class HeadersDoNotExist: public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return "Headers doesn't exits in HTTP message";
-                }
-        };
-		/**
-         * Exception for cases where errors in request line in HTTP Request
-         */
-        class RequestLineError: public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return "Error in request Line in HTTP request header";
-                }
-        };
-
-        //Exceptions
-		/**
-         * Exception for cases where headers are missing in the HTTP message.
-         */
-        class HeadersDoNotExist: public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return "Headers doesn't exits in HTTP message";
-                }
-        };
-		/**
-         * Exception for cases where errors in request line in HTTP Request
-         */
-        class RequestLineError: public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return "Error in request Line in HTTP request header";
-                }
-        };
 
         //Exceptions
 		/**

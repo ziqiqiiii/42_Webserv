@@ -16,7 +16,7 @@ HTTPResponse::HTTPResponse()
 {
 }
 
-HTTPResponse::HTTPResponse(HTTPResponse &copy)
+HTTPResponse::HTTPResponse(HTTPResponse &copy): HTTPMessage()
 {
 	*this = copy;
 }
