@@ -9,9 +9,6 @@ HEAD_PATH		=	includes/
 # Finds every header in the src directory
 FILES			=	$(shell find $(SRCS_PATH) -name '*.cpp')
 
-# Finds every header in the include directory
-HEAD_FILES		=	$(shell find $(HEAD_PATH) -name '*.hpp')
-
 #Finds every directory and subdirectories in include directory and adds -I
 INCLUDES		=	$(addprefix -I, $(shell find $(HEAD_PATH) -type d))
 
@@ -29,11 +26,10 @@ CFLAGS			=	-Wall -Wextra -Werror -std=c++98
 all:			$(NAME)
 
 $(NAME):		$(OBJS)
-				$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) -o $(NAME)
+				$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 $(OBJS_PATH)%.o:	$(SRCS_PATH)%.cpp
 				@mkdir -p $(dir $@)
-				# @echo includes : $(INCLUDES)
 				$(CC) $(CFLAGS) -MMD -MP $(INCLUDES) -c $< -o $@
 
 -include $(DEPS)
