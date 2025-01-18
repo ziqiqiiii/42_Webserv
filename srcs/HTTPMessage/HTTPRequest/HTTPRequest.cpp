@@ -111,6 +111,19 @@ void HTTPRequest::_parseMessage(const std::string& message) {
 
     // Clear the split string vector
     split_string.clear();
+
+    // Split the start line into components
+    std::vector<string> split_string = WebServer::Utils::splitString(this->_start_line);
+    if (split_string.size() != 3)
+        throw RequestLineError();
+
+    // Set method, request target, and HTTP version
+    this->_setMethod(split_string[0]);
+    this->_setRequestTarget(split_string[1]);
+    this->_setHttpVersion(split_string[2]);
+
+    // Clear the split string vector
+    split_string.clear();
 }
 
 /**
