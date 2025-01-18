@@ -33,9 +33,13 @@ enum PathType
 	STATFAIL = -1
 };
 
+/**
+ * @namespace WebServer
+ * @brief Contains all components related to the web server.
+ */
 namespace WebServer
 {
-	/**
+       /**
      * @class Utils
      * @brief A utility class providing static helper functions for common tasks.
      *

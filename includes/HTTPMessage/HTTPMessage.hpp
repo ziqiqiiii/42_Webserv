@@ -35,12 +35,6 @@ class HTTPMessage
         string							_start_line;
         std::map<string, string>		_headers;
         string							_body;
-
-	private:
-        void    						_parseStartline(const string& start_line);
-        void    						_parseHeaders(const string& headers);
-        void    						_parseBody(const string& body);
-		
     public:
         HTTPMessage();
         ~HTTPMessage();
@@ -58,18 +52,11 @@ class HTTPMessage
         string							getMessage() const;
 		string							getStarline() const;
 
-		void    						parseMessage(const string& message);
-
-        //Exceptions 
-        class HeadersDoNotExist: public std::exception
-        {
-            public:
-                virtual const char* what() const throw()
-                {
-                    return "Headers don't exist in HTTP message";
-                }
-        };
-
+        // Abstract Method(s)
+        /**
+         * Abstract method for additional validation or checks.
+         * Must be implemented by derived classes.
+         */
         virtual void checker() = 0;
 };
 
