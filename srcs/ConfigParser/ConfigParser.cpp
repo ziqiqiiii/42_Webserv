@@ -1,5 +1,5 @@
-#include "../includes/ConfigParser/ConfigParser.hpp"
-#include "../includes/ConfigParser/Location.hpp"
+#include "ConfigParser.hpp"
+#include "Location.hpp"
 
 ConfigParser::ConfigParser(): _nb_server(0){}
 

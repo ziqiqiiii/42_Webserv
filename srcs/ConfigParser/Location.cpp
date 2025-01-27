@@ -1,6 +1,6 @@
-#include "../includes/ConfigParser/Location.hpp"
-#include "../includes/Utils/Utils.hpp"
-#include "../includes/ConfigParser/ServerConfig.hpp"
+#include "Location.hpp"
+#include "Utils.hpp"
+#include "ServerConfig.hpp"
 
 Location::Location()
 {

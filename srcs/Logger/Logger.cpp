@@ -1,4 +1,4 @@
-# include "../../includes/Logger/Logger.hpp"
+# include "Logger.hpp"
 
 /**
  * @brief Default constructor for Logger.

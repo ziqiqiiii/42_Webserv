@@ -4,7 +4,7 @@
 
 SRCS_PATH		=	srcs/
 OBJS_PATH		=	objs/
-HEAD_PATH		=	includes/
+HEAD_PATH		=	srcs/
 
 # Finds every header in the src directory
 FILES			=	$(shell find $(SRCS_PATH) -name '*.cpp')
@@ -20,7 +20,7 @@ DEPS			=	$(patsubst $(SRCS_PATH)%.cpp, $(OBJS_PATH)%.d, $(FILES))
 
 NAME			=	webserver
 
-CC				=	c++
+CC				=	g++
 RM				=	rm -rf
 CFLAGS			=	-Wall -Wextra -Werror -std=c++98
 
@@ -45,5 +45,8 @@ fclean:			clean
 				$(RM) $(NAME)
 
 re:				fclean all
+
+test: all
+				./$(NAME)
 
 .PHONY:			all clean fclean re

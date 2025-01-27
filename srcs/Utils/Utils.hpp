@@ -13,7 +13,7 @@
 # include <sstream>
 # include <iterator>
 # include <fstream>
-# include "../../includes/Logger/Logger.hpp"
+# include "Logger.hpp"
 
 using std::cout;
 using std::endl;

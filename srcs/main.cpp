@@ -1,8 +1,8 @@
-# include "../includes/Client/Socket.hpp"
-# include "../includes/HTTPMessage/HTTPRequest/HTTPRequest.hpp"
-# include "../includes/Logger/Logger.hpp"
-# include "../includes/ConfigParser/ConfigParser.hpp"
-# include "../includes/ServerManager/ServerManager.hpp"
+# include "Socket.hpp"
+# include "HTTPRequest.hpp"
+# include "Logger.hpp"
+# include "ConfigParser.hpp"
+# include "ServerManager.hpp"
 
 void handleSigpipe(int sig)
 { 

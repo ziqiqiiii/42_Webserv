@@ -1,6 +1,6 @@
-#include "../../includes/ServerManager/ServerManager.hpp"
-#include "../../includes/Logger/Logger.hpp"
-#include "../includes/HTTPMessage/HTTPRequest/HTTPRequest.hpp"
+#include "ServerManager.hpp"
+#include "Logger.hpp"
+#include "HTTPRequest.hpp"
 
 ServerManager::ServerManager(){}
 

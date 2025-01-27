@@ -1,4 +1,4 @@
-#include "../../includes/Client/Socket.hpp"
+#include "Socket.hpp"
 
 // Default Constructor
 WebServer::Socket::Socket(int domain, int service,  int protocol, int port, unsigned long interface)

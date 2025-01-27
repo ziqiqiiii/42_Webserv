@@ -22,6 +22,35 @@ using std::string;
 //MACROS 
 # define SP " "
 
+//Enum
+// enum State
+// {
+//     idle,
+//     space,
+//     crlf,
+//     crlfcrlf,
+//     method,
+//     uri,
+//     httpVersion,
+//     headerKey,
+//     headerValue,
+//     semicolon,
+//     body,
+//     error
+// };
+
+// const std::map<State, State> Transitions = {
+//     {idle, method},
+//     {method, space},
+//     {uri, space},
+//     {httpVersion, crlf},
+//     {headerKey, semicolon},
+//     {semicolon, space},
+//     {headerValue, crlf},
+//     {crlfcrlf, body},
+//     {body, crlf}
+// };
+
 /**
  * @class HTTPRequest
  * @brief A class representing an HTTP request message.

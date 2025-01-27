@@ -1,7 +1,7 @@
-#include "../includes/ConfigParser/ServerConfig.hpp"
-#include "../includes/Utils/Utils.hpp"
-#include "../includes/ConfigParser/Location.hpp"
-#include "../includes/Logger/Logger.hpp"
+#include "ServerConfig.hpp"
+#include "Utils.hpp"
+#include "Location.hpp"
+#include "Logger.hpp"
 
 ServerConfig::ServerConfig()
 {
