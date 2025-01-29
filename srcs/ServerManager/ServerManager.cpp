@@ -110,6 +110,8 @@ void	ServerManager::acceptNewConnection(ServerConfig &serv)
 	long				client_address_size = sizeof(client_address);
 	int					client_socket;
 	char				buf[INET_ADDRSTRLEN];
+	HTTPRequest			*request_handler = new HTTPRequest();
+	string hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nnihao world!";
 
 	//accept() accepts new incoming connection, will block until connection request is received
 	//client_address contains client's address information(IP and Port)
@@ -141,22 +143,13 @@ void	ServerManager::acceptNewConnection(ServerConfig &serv)
 		return ;
 	}
 	*/
+	request_handler->feedFromFd(client_socket);
 	logManager->logMsg(LIGHTMAGENTA, "+++++++ Connection Accepted ++++++++\n");
-
-	char buffer[30000] = {0};
-	int valread = read(client_socket, buffer, 30000);
-	string hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nnihao world!";
-	logManager->logMsg(YELLOW, "------- Header -------\n");
-    logManager->logMsg(YELLOW, "%s\n", buffer);
-    HTTPRequest request(buffer);
-    logManager->logMsg(LIGHT_BLUE, "------- Getters -------\n");
-    logManager->logMsg(LIGHT_BLUE, "Start line: %s\n", request.getStarline().c_str());
-    cout << LIGHT_BLUE << "Field line:\n" << request.getRequestMethod() << endl;
-    cout << LIGHT_BLUE << "test test\n" << request.getHttpVersion() << endl;
-    logManager->logMsg(LIGHT_BLUE, "Message Body: %s\n", request.getBody().c_str());
+	cout << LIGHT_BLUE << "Field line:\n" << request_handler->getRequestMethod() << endl;
+    cout << LIGHT_BLUE << "test test\n" << request_handler->getHttpVersion() << endl;
     logManager->logMsg(LIGHT_BLUE, "+++++++ Sending Message ++++++++\n");
     send(client_socket, hello.c_str(), hello.size(), 0);
-    logManager->logMsg(LIGHT_BLUE, "------------------Hello message sent-------------------%d\n", valread);
+    logManager->logMsg(LIGHT_BLUE, "------------------Hello message sent-------------------%d\n");
     close(client_socket);
 	removeFromSet(client_socket, _recv_fd_pool);
 	client_socket = -1;
