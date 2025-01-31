@@ -15,6 +15,7 @@ DoneState& DoneState::operator=(const DoneState& tmp)
 
 void DoneState::handle(HTTPRequest& httpRequest, char c)
 {
+    httpRequest.setStateEnum(State::Done);
     (void) httpRequest;
     (void) c;
 }

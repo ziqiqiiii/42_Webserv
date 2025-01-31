@@ -27,13 +27,23 @@ void HTTPRequest::appendToBody(char c)
 
 void HTTPRequest::storeHeader()
 {
-    string header(this->_currentHeader, this->_headerIdx);
-    std::vector<string> split_string = WebServer::Utils::splitString(header, ": ");
-    this->_headers[split_string[0]] = split_string[1];
-    this->_headerIdx = 0;
+    try {
+        string header(this->_currentHeader, this->_headerIdx);
+        std::vector<string> split_string = WebServer::Utils::splitString(header, ": ");
+        cout << split_string[0] << " " << split_string[1] << endl;
+        this->_headers[split_string[0]] = split_string[1];
+		memset(this->_currentHeader, 0, this->_headerIdx);
+    	this->_headerIdx = 0;
+    } catch (std::exception &e) {
+        this->TransitionTo(new ErrorState());
+        this->_current_state->handle(*this, static_cast<char>(HttpStatusCode::InternalServerError));
+    }
+
 }
 
 void    HTTPRequest::setErrorCode(int error_code)
 {
     this->_error_code = error_code;
 }
+
+void    HTTPRequest::setStateEnum(int state) { this->_state_enum = state; }

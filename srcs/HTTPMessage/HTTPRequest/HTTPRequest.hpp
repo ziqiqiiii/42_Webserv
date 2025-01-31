@@ -12,6 +12,7 @@
 # include <csignal>
 # include <vector>
 # include <cstring>
+# include <typeinfo>
 
 # include "HTTPMessage.hpp"
 # include "Utils.hpp"
@@ -89,6 +90,7 @@ class HTTPRequest: public HTTPMessage
 		size_t 						_methodIdx, _uriIdx, _versionIdx, _headerIdx, _bodyIdx;
 		size_t						_fd;
 		size_t						_error_code;
+		size_t						_state_enum;
 
     public:
         HTTPRequest();
@@ -107,15 +109,21 @@ class HTTPRequest: public HTTPMessage
         string						getBody()           const;
 		std::map<string, string>	getHeaders()		const;
 		size_t						getFd()				const;
+		size_t						getStatusEnum()		const;
+		string						getCurrentHeader()	const;
+
+		string						getStateString(int state);
+		IState*						getCurrentState()	const;
 
 		// Setters
-		void						appendToMethod(char c);
+		void							appendToMethod(char c);
 		void						appendToUri(char c);
 		void						appendToVersion(char c);
 		void						appendToCurrentHeader(char c);
 		void						appendToBody(char c);
 		void						storeHeader();
 		void						setErrorCode(int error_code);
+		void						setStateEnum(int state);
 
         // Abstract Method(s)
         /**

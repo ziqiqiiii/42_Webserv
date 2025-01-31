@@ -15,9 +15,9 @@ HttpVersionState& HttpVersionState::operator=(const HttpVersionState& tmp)
 
 void HttpVersionState::handle(HTTPRequest& httpRequest, char c)
 {
-    if (c == '\n') {
+    if (c == '\n')
         httpRequest.TransitionTo(new HeaderState());
-    } else if (c != '\r') {
+    else if (c != '\r') 
         httpRequest.appendToVersion(c);
-    }
+    httpRequest.feedFromFd(httpRequest.getFd());
 }

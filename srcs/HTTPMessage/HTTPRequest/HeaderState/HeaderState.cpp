@@ -16,7 +16,7 @@ HeaderState& HeaderState::operator=(const HeaderState& tmp)
 void HeaderState::handle(HTTPRequest& httpRequest, char c)
 {
     if (c == '\n') {
-        if (httpRequest.getHeaders().empty() && httpRequest.getBody()[0] == '\0') {
+        if (httpRequest.getCurrentHeader().empty() && httpRequest.getBody()[0] == '\0') {
             httpRequest.TransitionTo(new BodyState()); // Empty line indicates end of headers
         } else {
             httpRequest.storeHeader();
@@ -24,4 +24,5 @@ void HeaderState::handle(HTTPRequest& httpRequest, char c)
     } else if (c != '\r') {
         httpRequest.appendToCurrentHeader(c);
     }
+    httpRequest.feedFromFd(httpRequest.getFd());
 }

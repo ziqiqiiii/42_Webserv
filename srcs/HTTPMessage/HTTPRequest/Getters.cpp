@@ -26,3 +26,32 @@ size_t	HTTPRequest::getFd() const { return this->_fd; }
 string	HTTPRequest::getBody() const { return string(this->_body, this->_bodyIdx); }
 
 std::map<string, string>	HTTPRequest::getHeaders() const { return this->_headers; }
+
+size_t	HTTPRequest::getStatusEnum() const { return this->_state_enum; }
+
+string	HTTPRequest::getCurrentHeader() const { return this->_currentHeader; }
+
+IState*	HTTPRequest::getCurrentState() const { return this->_current_state; }
+
+string	HTTPRequest::getStateString(int state)
+{
+	switch (state)
+	{
+		case State::Idle:
+			return "Idle State";
+		case State::Method:
+			return "Method State";
+		case State::Uri:
+			return "Uri State";
+		case State::HttpVersion:
+			return "Http Version State";
+		case State::Header:
+			return "Header State";
+		case State::Body:
+			return "Done State";
+		case State::Done:
+			return "Body State";
+		default:
+			return "Error State";
+	}
+}

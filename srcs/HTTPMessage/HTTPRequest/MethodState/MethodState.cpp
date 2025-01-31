@@ -17,6 +17,8 @@ void MethodState::handle(HTTPRequest& httpRequest, char c)
 {
     if (isspace(c))
         httpRequest.TransitionTo(new UriState());
-    else
+    else {
         httpRequest.appendToMethod(c);
+    }
+    httpRequest.feedFromFd(httpRequest.getFd());
 }

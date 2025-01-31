@@ -18,5 +18,6 @@ void UriState::handle(HTTPRequest& httpRequest, char c)
     if (isspace(c))
         httpRequest.TransitionTo(new HttpVersionState());
     else
-        httpRequest.appendToMethod(c);
+        httpRequest.appendToUri(c);
+    httpRequest.feedFromFd(httpRequest.getFd());
 }

@@ -15,7 +15,15 @@ BodyState& BodyState::operator=(const BodyState& tmp)
 
 void BodyState::handle(HTTPRequest& httpRequest, char c)
 {
-    if (httpRequest.getBody()[MAX_BODY_LEN - 2] != '\0') { // Check for body completion
+    cout << "weeeeeeeeee" << endl;
+    std::map<std::string, std::string>::const_iterator search = httpRequest.getHeaders().find("Content-Length");
+    if (search == httpRequest.getHeaders().end()) {
+        cout << "no body" << endl;
+        return ;
+    }
+    if (httpRequest.getBody()[MAX_BODY_LEN - 2] != '\0') {
+         // Check for body completion
+        cout << "Ello " << endl;
         httpRequest.appendToBody(c);
     } else {
         httpRequest.TransitionTo(new DoneState()); // Transition to DoneState when body is complete

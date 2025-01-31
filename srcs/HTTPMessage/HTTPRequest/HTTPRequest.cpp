@@ -52,10 +52,7 @@ HTTPRequest& HTTPRequest::operator=(const HTTPRequest& src)
     return *this;
 }
 
-void HTTPRequest::checker()
-{
-	std::map<string, string> headers = this->getHeaders();
-}
+void HTTPRequest::checker() {}
 
 void    HTTPRequest::appendToBuffer(char* buffer, size_t& index, size_t maxLen, char c)
 {
@@ -65,24 +62,43 @@ void    HTTPRequest::appendToBuffer(char* buffer, size_t& index, size_t maxLen, 
 }
 
 void    HTTPRequest::feedFromFd(int fd) {
+    this->_fd = fd;
     char buffer[BUFFER_SIZE];
-    int bytesRead;
+    int bytesRead = 0;
 
-    while ((bytesRead = read(fd, buffer, BUFFER_SIZE)) > 0) {
-        for (int i = 0; i < bytesRead; ++i) {
-            this->_current_state->handle(*this, buffer[i]);
-        }
+    if (fd < 0) {
+        perror("Invalid file descriptor");
+        this->TransitionTo(new ErrorState());
+        return;
     }
 
-    if (bytesRead < 0) {
+    // cout << "dassdad" << endl;
+    fcntl(fd, F_SETFL, O_NONBLOCK);
+    if ((bytesRead = read(fd, buffer, BUFFER_SIZE)) > 0) {
+            this->_current_state->handle(*this, buffer[0]);
+    } 
+    if (bytesRead == 0) {
+        cout << "End Reading" << endl;  
+        close(fd);
+        memset(buffer, 0, sizeof(buffer));
+        this->TransitionTo(new DoneState());
+    }
+    else if (bytesRead < 0) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            std::cerr << "No data available yet. Try again later." << std::endl;
+            return;
+        }
+        perror("Error");
         this->TransitionTo(new ErrorState());
-        this->_current_state->handle(*this, static_cast<char>(InternalServerError));
+        this->_current_state->handle(*this, static_cast<char>(HttpStatusCode::InternalServerError));
     }
 }
 
 void	HTTPRequest::TransitionTo(IState* state)
 {
+    cout << "Context: Transition to " << typeid(*state).name() << endl;
     if (this->_current_state != NULL)
         delete this->_current_state;
     this->_current_state = state;
+    this->_current_state->setRequestContext(this);
 }

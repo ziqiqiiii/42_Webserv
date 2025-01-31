@@ -145,11 +145,12 @@ void	ServerManager::acceptNewConnection(ServerConfig &serv)
 	*/
 	request_handler->feedFromFd(client_socket);
 	logManager->logMsg(LIGHTMAGENTA, "+++++++ Connection Accepted ++++++++\n");
-	cout << LIGHT_BLUE << "Field line:\n" << request_handler->getRequestMethod() << endl;
-    cout << LIGHT_BLUE << "test test\n" << request_handler->getHttpVersion() << endl;
+	cout << LIGHT_BLUE << "Field line: " << request_handler->getRequestMethod() << endl;
+	cout << LIGHT_BLUE << "uri: " << request_handler->getRequestTarget() << endl;
+    cout << LIGHT_BLUE << "test test: " << request_handler->getHttpVersion() << endl;
     logManager->logMsg(LIGHT_BLUE, "+++++++ Sending Message ++++++++\n");
     send(client_socket, hello.c_str(), hello.size(), 0);
-    logManager->logMsg(LIGHT_BLUE, "------------------Hello message sent-------------------%d\n");
+    logManager->logMsg(LIGHT_BLUE, "------------------Hello message sent-------------------\n");
     close(client_socket);
 	removeFromSet(client_socket, _recv_fd_pool);
 	client_socket = -1;

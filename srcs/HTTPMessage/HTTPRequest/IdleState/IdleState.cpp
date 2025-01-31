@@ -16,7 +16,7 @@ IdleState& IdleState::operator=(const IdleState& tmp)
 void IdleState::handle(HTTPRequest& httpRequest, char c)
 {
     if (!isspace(c)) {
-        httpRequest.TransitionTo((IState *)(new MethodState()));
-        httpRequest.feedFromFd(httpRequest.getFd());
+        httpRequest.TransitionTo(new MethodState());
+        httpRequest.getCurrentState()->handle(httpRequest, c);
     }
 }
