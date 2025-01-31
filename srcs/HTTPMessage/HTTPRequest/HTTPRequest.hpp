@@ -111,8 +111,6 @@ class HTTPRequest: public HTTPMessage
 		size_t						getFd()				const;
 		size_t						getStatusEnum()		const;
 		string						getCurrentHeader()	const;
-
-		string						getStateString(int state);
 		IState*						getCurrentState()	const;
 
 		// Setters
